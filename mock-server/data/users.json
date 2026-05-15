@@ -1,0 +1,9 @@
+[
+  {
+    "id": "1",
+    "email": "admin@facturation.dev",
+    "password": "password123",
+    "name": "Admin User",
+    "role": "admin"
+  }
+]

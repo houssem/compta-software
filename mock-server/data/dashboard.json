@@ -1,0 +1,39 @@
+{
+  "kpis": {
+    "invoicesCount": 47,
+    "invoicesCountVariation": 12,
+    "totalAmountHT": 128450.00,
+    "totalAmountVariation": 8.5,
+    "pendingAmount": 34200.00,
+    "pendingCount": 11,
+    "overdueAmount": 9800.00,
+    "overdueCount": 3
+  },
+  "revenueSeries": [
+    { "month": "Juin 2025", "amount": 95000 },
+    { "month": "Juil 2025", "amount": 87000 },
+    { "month": "Août 2025", "amount": 72000 },
+    { "month": "Sept 2025", "amount": 105000 },
+    { "month": "Oct 2025", "amount": 118000 },
+    { "month": "Nov 2025", "amount": 99000 },
+    { "month": "Déc 2025", "amount": 143000 },
+    { "month": "Jan 2026", "amount": 110000 },
+    { "month": "Fév 2026", "amount": 98000 },
+    { "month": "Mar 2026", "amount": 125000 },
+    { "month": "Avr 2026", "amount": 132000 },
+    { "month": "Mai 2026", "amount": 128450 }
+  ],
+  "statusDistribution": [
+    { "status": "Payée", "count": 28 },
+    { "status": "En attente", "count": 11 },
+    { "status": "En retard", "count": 3 },
+    { "status": "Émise", "count": 5 }
+  ],
+  "comparisonSeries": [
+    { "month": "Jan", "invoiced": 110000, "collected": 95000 },
+    { "month": "Fév", "invoiced": 98000, "collected": 88000 },
+    { "month": "Mar", "invoiced": 125000, "collected": 118000 },
+    { "month": "Avr", "invoiced": 132000, "collected": 124000 },
+    { "month": "Mai", "invoiced": 128450, "collected": 89000 }
+  ]
+}
