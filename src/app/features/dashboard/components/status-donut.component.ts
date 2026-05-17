@@ -6,9 +6,7 @@ import type { EChartsOption } from 'echarts'
   selector: 'app-status-donut',
   standalone: true,
   imports: [NgxEchartsModule],
-  template: `
-    <div echarts [options]="chartOptions" style="height: 280px; width: 100%"></div>
-  `
+  templateUrl: './status-donut.component.html'
 })
 export class StatusDonutComponent implements OnChanges {
   @Input() distribution: { status: string; count: number }[] = []

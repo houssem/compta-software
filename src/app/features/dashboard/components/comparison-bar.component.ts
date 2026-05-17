@@ -6,9 +6,7 @@ import type { EChartsOption } from 'echarts'
   selector: 'app-comparison-bar',
   standalone: true,
   imports: [NgxEchartsModule],
-  template: `
-    <div echarts [options]="chartOptions" style="height: 280px; width: 100%"></div>
-  `
+  templateUrl: './comparison-bar.component.html'
 })
 export class ComparisonBarComponent implements OnChanges {
   @Input() series: { month: string; invoiced: number; collected: number }[] = []

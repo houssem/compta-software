@@ -6,9 +6,7 @@ import type { EChartsOption } from 'echarts'
   selector: 'app-revenue-chart',
   standalone: true,
   imports: [NgxEchartsModule],
-  template: `
-    <div echarts [options]="chartOptions" style="height: 280px; width: 100%"></div>
-  `
+  templateUrl: './revenue-chart.component.html'
 })
 export class RevenueChartComponent implements OnChanges {
   @Input() series: { month: string; amount: number }[] = []

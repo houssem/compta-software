@@ -1,0 +1,126 @@
+<nav class="navbar">
+  <div style="display:flex;align-items:center;gap:32px;">
+    <a class="navbar__brand" routerLink="/">Facturation</a>
+    <div class="navbar__nav">
+      <a href="/#features">Fonctionnalités</a>
+      <a href="/#pricing">Tarifs</a>
+      <a href="/#about">À propos</a>
+    </div>
+  </div>
+  <div class="navbar__actions">
+    <a routerLink="/login" class="btn-login active" style="font-weight:700; border-bottom: 2px solid var(--color-primary);">Connexion</a>
+    <a routerLink="/dashboard" class="btn-register">S'inscrire</a>
+    <span class="material-symbols-outlined">notifications</span>
+    <span class="material-symbols-outlined">settings</span>
+  </div>
+</nav>
+
+<main class="login-main">
+  <div class="login-container">
+    <header class="login-header">
+      <div class="login-brand">
+        <span class="material-symbols-outlined icon">account_balance</span>
+        <h1>Facturation</h1>
+      </div>
+      <div class="login-title">
+        <h2>Se connecter à votre compte</h2>
+        <p>Entrez vos identifiants pour accéder à votre espace.</p>
+      </div>
+    </header>
+
+    <form class="login-form" (ngSubmit)="onSubmit()" #loginForm="ngForm">
+      <div class="form-group">
+        <label for="email">E-mail</label>
+        <div class="input-wrapper">
+          <span class="material-symbols-outlined icon">mail</span>
+          <input id="email" type="email" name="email" [(ngModel)]="email" placeholder="nom@entreprise.com" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="label-row">
+          <label for="password">Mot de passe</label>
+          <a href="#" class="forgot-link">Mot de passe oublié ?</a>
+        </div>
+        <div class="input-wrapper">
+          <span class="material-symbols-outlined icon">lock</span>
+          <input id="password" [type]="showPassword ? 'text' : 'password'" name="password" [(ngModel)]="password" placeholder="••••••••" required>
+          <button type="button" class="btn-icon right" (click)="togglePassword()">
+            <span class="material-symbols-outlined">{{ showPassword ? 'visibility_off' : 'visibility' }}</span>
+          </button>
+        </div>
+      </div>
+      
+      @if (errorMessage) {
+        <div class="error-message">
+           <span class="material-symbols-outlined icon-error">error</span>
+           <span>{{ errorMessage }}</span>
+        </div>
+      }
+
+      <button type="submit" class="btn-primary full-width" [disabled]="!email || !password || loading">
+        <span>{{ loading ? 'Connexion en cours...' : 'Se connecter' }}</span>
+      </button>
+    </form>
+
+    <div class="divider">
+      <div class="line"></div>
+      <span>Ou continuer avec</span>
+      <div class="line"></div>
+    </div>
+
+    <div class="social-login">
+      <button type="button" class="btn-social">
+        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuA42lSH4qIzdSDmI4ii2TXWkJ2TT6weQoobp9Ft3ZJ4gb6W1lGI1GeMH8ejVDVitaFstrws3vhnhCxnCiQID4kEc-j3hSv41m5Iz-WYnD1C4HX_XE6qEA6h2mlPf19rpSnzpIfTDFkjSAogmor2l9IvZyOYCIHncvzqmbb3xR6hUw8NvQ31CIJ2FpgcDvsLtzPylOmXKQ3IoGJiB2u7Sz6L9hcVH-V9LK3a1ksDV-oxt-w6A24ux7EZTjfGYVon9pt4lW6BjtwzUhE4" alt="Google">
+        <span>Google</span>
+      </button>
+      <button type="button" class="btn-social">
+        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbI-4vGJFlPOF19FUYNKudOgUt1ld1YOesY7YEKkvpB8GG8tknKomFLEn-KT_o5HA0H5_e3AwhpBm0wrANbBwEZq-dsFqQKRjyX3xxxnr9Qao7_EVuWDwNrkVcYP-tDcjPXroa3_SaZfp47Z92-v6ExWEIenMQ_k1Adt32uwBIRChRLFPTQCzK9RHGpKBXgswTG8wRogtSg9Q6ax5p9WoIIAY6urjwsS8eNM0vkOtGIXUO_AfbJFYk7g9bzLF8WlRpN-LqLv1uI8BS" alt="Microsoft">
+        <span>Microsoft</span>
+      </button>
+    </div>
+
+    <div class="register-link">
+      <p>Pas encore de compte ? <a href="#">S'inscrire</a></p>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <h3>Facturation</h3>
+      <p>La suite comptable de référence pour les entreprises à forte croissance. Précision, rapidité et sécurité bancaire.</p>
+      <div class="footer-icons">
+        <span class="material-symbols-outlined">menu_book</span>
+        <span class="material-symbols-outlined">language</span>
+        <span class="material-symbols-outlined">public</span>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h5>Produit</h5>
+      <ul>
+        <li><a href="#">Fonctionnalités</a></li>
+        <li><a href="#">Tarifs</a></li>
+        <li><a href="#">Sécurité</a></li>
+        <li><a href="#">API</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Contact</h5>
+      <ul>
+        <li>support&#64;facturation.dev</li>
+        <li>+33 1 23 45 67 89</li>
+        <li>12 Rue de la Finance, Paris</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 Facturation. Tous droits réservés.</p>
+    <div class="footer-bottom-links">
+      <a href="#">Conditions</a>
+      <a href="#">Confidentialité</a>
+      <a href="#">Cookies</a>
+    </div>
+  </div>
+</footer>

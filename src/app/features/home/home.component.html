@@ -1,0 +1,230 @@
+<!-- ============================================================
+     TOP NAVBAR
+     ============================================================ -->
+<nav class="navbar">
+  <div style="display:flex;align-items:center;gap:32px;">
+    <a class="navbar__brand" routerLink="/">Facturation</a>
+    <div class="navbar__nav">
+      <a href="#features" class="active">Fonctionnalités</a>
+      <a href="#pricing">Tarifs</a>
+      <a href="#about">À propos</a>
+    </div>
+  </div>
+  <div class="navbar__actions">
+    @if (isLoggedIn()) {
+      <span class="navbar__greeting">Bonjour, {{ userName() }}</span>
+      <a routerLink="/dashboard" class="btn-register">Tableau de bord</a>
+    } @else {
+      <a routerLink="/login" class="btn-login">Connexion</a>
+      <a routerLink="/login" class="btn-register">Commencer</a>
+    }
+    <span class="material-symbols-outlined">notifications</span>
+    <span class="material-symbols-outlined">settings</span>
+  </div>
+</nav>
+
+<!-- ============================================================
+     MAIN CONTENT
+     ============================================================ -->
+<main class="page-main">
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <!-- Left: Copy -->
+    <div class="hero__left">
+      <p class="hero__eyebrow">Invoicing Suite v2.0</p>
+      <h1 class="hero__headline">
+        Simplifiez votre facturation,<br>maîtrisez votre trésorerie
+      </h1>
+      <p class="hero__subline">
+        Émettez des factures professionnelles en quelques secondes. Automatisez
+        vos relances de paiement et suivez vos flux de trésorerie en temps réel
+        avec une précision chirurgicale.
+      </p>
+
+      <div class="hero__cta">
+        <a routerLink="/dashboard" class="btn-primary">
+          Démarrer gratuitement
+        </a>
+        <button class="btn-secondary" type="button">
+          Voir la démo
+        </button>
+      </div>
+
+      <div class="hero__social-proof">
+        <div class="avatar-stack">
+          <img src="https://i.pravatar.cc/80?img=47" alt="Utilisateur">
+          <img src="https://i.pravatar.cc/80?img=12" alt="Utilisateur">
+          <img src="https://i.pravatar.cc/80?img=29" alt="Utilisateur">
+        </div>
+        <p class="hero__social-proof-text">
+          Utilisé par <strong>+500 entreprises</strong> en France
+        </p>
+      </div>
+    </div>
+
+    <!-- Right: Dashboard mockup -->
+    <div class="mockup-wrapper">
+      <div class="mockup-glow"></div>
+      <div class="mockup-card">
+        <div class="mockup-inner">
+          <div class="mockup-kpi-row">
+            <div>
+              <p class="mockup-kpi-label">Chiffre d'affaires (mensuel)</p>
+              <p class="mockup-kpi-value">€42&nbsp;850,00</p>
+            </div>
+            <div class="mockup-mini-chart">
+              <span style="height:55%"></span>
+              <span style="height:68%"></span>
+              <span style="height:100%"></span>
+              <span style="height:80%"></span>
+            </div>
+          </div>
+          <div class="mockup-divider"></div>
+          <table class="mockup-table">
+            <thead>
+              <tr>
+                <th>Client</th>
+                <th>État</th>
+                <th>Montant</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>TechSolutions SAS</td>
+                <td><span class="badge badge-paid">Payé</span></td>
+                <td>€1 250,00</td>
+              </tr>
+              <tr>
+                <td>Design Studio Paris</td>
+                <td><span class="badge badge-sent">Envoyé</span></td>
+                <td>€4 800,00</td>
+              </tr>
+              <tr>
+                <td>Global Logistics</td>
+                <td><span class="badge badge-overdue">Retard</span></td>
+                <td>€2 100,00</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TRUST LOGOS ===== -->
+  <div class="trust-band">
+    <span class="trust-brand">STRIPE</span>
+    <span class="trust-brand">PAYPAL</span>
+    <span class="trust-brand">REVOLUT</span>
+    <span class="trust-brand">HSBC</span>
+    <span class="trust-brand">SAGE</span>
+  </div>
+
+  <!-- ===== FEATURES ===== -->
+  <section class="features-section" id="features">
+    <div class="section-header">
+      <h2>Fonctionnalités avancées pour la finance</h2>
+      <p>Conçu pour les professionnels qui exigent une fiabilité absolue et un gain de temps maximal.</p>
+    </div>
+    <div class="features-grid">
+
+      <div class="feature-card">
+        <div class="feature-icon feature-icon--blue">
+          <span class="material-symbols-outlined">bolt</span>
+        </div>
+        <div>
+          <h4>Facturation Instantanée</h4>
+          <p>Créez et envoyez des factures conformes aux normes fiscales en moins de 60 secondes. Pré-remplissage automatique des données clients récurrents.</p>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon feature-icon--red">
+          <span class="material-symbols-outlined">notifications_active</span>
+        </div>
+        <div>
+          <h4>Relances automatiques</h4>
+          <p>Configurez des séquences de relance intelligentes. Notre système envoie des rappels polis mais fermes à J-3, J+1 et J+7 de l'échéance.</p>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon feature-icon--green">
+          <span class="material-symbols-outlined">account_balance_wallet</span>
+        </div>
+        <div>
+          <h4>Paiements Intégrés</h4>
+          <p>Acceptez les cartes bancaires et virements instantanés directement via vos factures grâce à nos intégrations Stripe et PayPal.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== KPI STATS BANNER ===== -->
+  <section class="stats-banner">
+    <div class="stat-item">
+      <p>Temps gagné</p>
+      <h4>
+        <span class="stat-value-lg">12h</span>
+        <span class="stat-value-unit"> / mois</span>
+      </h4>
+    </div>
+    <div class="stat-item">
+      <p>Réduction impayés</p>
+      <h4><span class="stat-value-lg">−34%</span></h4>
+    </div>
+    <div class="stat-item">
+      <p>Conformité</p>
+      <h4><span class="stat-value-lg">100%</span></h4>
+    </div>
+    <div class="stat-item">
+      <p>Disponibilité</p>
+      <h4><span class="stat-value-lg">99.9%</span></h4>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <h3>Facturation</h3>
+      <p>La suite comptable de référence pour les entreprises à forte croissance. Précision, rapidité et sécurité bancaire.</p>
+      <div class="footer-icons">
+        <span class="material-symbols-outlined">menu_book</span>
+        <span class="material-symbols-outlined">language</span>
+        <span class="material-symbols-outlined">public</span>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h5>Produit</h5>
+      <ul>
+        <li><a href="#">Fonctionnalités</a></li>
+        <li><a href="#">Tarifs</a></li>
+        <li><a href="#">Sécurité</a></li>
+        <li><a href="#">API</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Contact</h5>
+      <ul>
+        <li>support&#64;facturation.dev</li>
+        <li>+33 1 23 45 67 89</li>
+        <li>12 Rue de la Finance, Paris</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 Facturation. Tous droits réservés.</p>
+    <div class="footer-bottom-links">
+      <a href="#">Conditions</a>
+      <a href="#">Confidentialité</a>
+      <a href="#">Cookies</a>
+    </div>
+  </div>
+</footer>

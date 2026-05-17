@@ -1,0 +1,74 @@
+<h2 class="text-2xl font-bold text-color mt-0 mb-4">Tableau de bord</h2>
+
+@if (loading()) {
+  <div class="flex justify-content-center align-items-center" style="height: 300px">
+    <p-progressSpinner />
+  </div>
+}
+
+@if (error()) {
+  <div class="p-4 border-round bg-red-50 text-red-700">
+    <i class="pi pi-exclamation-circle mr-2"></i>{{ error() }}
+  </div>
+}
+
+@if (summary(); as data) {
+  <!-- KPI Cards -->
+  <div class="grid mb-4">
+    <div class="col-12 sm:col-6 lg:col-3">
+      <app-kpi-card
+        title="Factures émises"
+        [value]="data.kpis.invoicesCount.toString()"
+        [variation]="data.kpis.invoicesCountVariation"
+        variationUnit=""
+        icon="pi-file"
+        subtitle="vs mois précédent" />
+    </div>
+    <div class="col-12 sm:col-6 lg:col-3">
+      <app-kpi-card
+        title="Montant total HT"
+        [value]="fmtCurrency(data.kpis.totalAmountHT)"
+        [variation]="data.kpis.totalAmountVariation"
+        variationUnit="%"
+        icon="pi-euro"
+        subtitle="ce mois" />
+    </div>
+    <div class="col-12 sm:col-6 lg:col-3">
+      <app-kpi-card
+        title="En attente"
+        [value]="fmtCurrency(data.kpis.pendingAmount)"
+        [variation]="data.kpis.pendingCount"
+        variationUnit=" factures"
+        icon="pi-clock"
+        subtitle="en attente" />
+    </div>
+    <div class="col-12 sm:col-6 lg:col-3">
+      <app-kpi-card
+        title="En retard"
+        [value]="fmtCurrency(data.kpis.overdueAmount)"
+        [variation]="data.kpis.overdueCount"
+        variationUnit=" factures"
+        icon="pi-exclamation-triangle"
+        subtitle="en retard" />
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="grid">
+    <div class="col-12 lg:col-8">
+      <p-card header="Évolution du CA (12 mois)">
+        <app-revenue-chart [series]="data.revenueSeries" />
+      </p-card>
+    </div>
+    <div class="col-12 lg:col-4">
+      <p-card header="Répartition par statut">
+        <app-status-donut [distribution]="data.statusDistribution" />
+      </p-card>
+    </div>
+    <div class="col-12">
+      <p-card header="Facturé vs Encaissé">
+        <app-comparison-bar [series]="data.comparisonSeries" />
+      </p-card>
+    </div>
+  </div>
+}
