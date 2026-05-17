@@ -1,3 +1,144 @@
 <div class="dv-page">
-  <p>Dashboard Vente — placeholder</p>
+  <div class="dv-content">
+
+    <!-- ── PAGE HEADER ─────────────────────────────────── -->
+    <div class="dv-page-header">
+      <div>
+        <h2 class="dv-page-title">Billing Dashboard</h2>
+        <p class="dv-page-subtitle">Aperçu en temps réel de votre activité de facturation.</p>
+      </div>
+      <button class="dv-btn-primary">
+        <span class="material-symbols-outlined">add</span>
+        Nouvelle facture
+      </button>
+    </div>
+
+    <!-- ── KPI ROW ─────────────────────────────────────── -->
+    <div class="dv-kpi-row">
+
+      <!-- Factures émises -->
+      <div class="dv-kpi-card">
+        <div class="dv-kpi-card__bar dv-kpi-card__bar--sent"></div>
+        <p class="dv-kpi-card__label">Factures émises</p>
+        <p class="dv-kpi-card__value">{{ summary()?.kpis?.invoicesCount ?? 124 }}</p>
+        <div class="dv-kpi-card__trend dv-kpi-card__trend--up">
+          <span class="material-symbols-outlined">trending_up</span>
+          <span>+12% ce mois</span>
+        </div>
+      </div>
+
+      <!-- Montant total HT -->
+      <div class="dv-kpi-card">
+        <div class="dv-kpi-card__bar dv-kpi-card__bar--primary"></div>
+        <p class="dv-kpi-card__label">Montant total HT</p>
+        <div class="dv-kpi-card__multicurrency">
+          <p><span class="dv-kpi-card__currency-label">EUR</span> €42,8k</p>
+          <p><span class="dv-kpi-card__currency-label">USD</span> $45,2k</p>
+          <p><span class="dv-kpi-card__currency-label">TND</span> 140,5k DT</p>
+        </div>
+        <div class="dv-kpi-card__trend">
+          <span>Tous comptes</span>
+        </div>
+      </div>
+
+      <!-- En attente -->
+      <div class="dv-kpi-card">
+        <div class="dv-kpi-card__bar dv-kpi-card__bar--pending"></div>
+        <p class="dv-kpi-card__label">En attente</p>
+        <p class="dv-kpi-card__value">{{ summary()?.kpis?.pendingCount ?? 18 }}</p>
+        <div class="dv-kpi-card__trend dv-kpi-card__trend--pending">
+          <span class="material-symbols-outlined">schedule</span>
+          <span>Moy. 4 jours</span>
+        </div>
+      </div>
+
+      <!-- En retard -->
+      <div class="dv-kpi-card">
+        <div class="dv-kpi-card__bar dv-kpi-card__bar--overdue"></div>
+        <p class="dv-kpi-card__label">En retard</p>
+        <div class="dv-kpi-card__multicurrency dv-kpi-card__multicurrency--error">
+          <p><span class="dv-kpi-card__currency-label">EUR</span> €4,2k</p>
+          <p><span class="dv-kpi-card__currency-label">USD</span> $1,1k</p>
+          <p><span class="dv-kpi-card__currency-label">TND</span> 3,4k DT</p>
+        </div>
+        <div class="dv-kpi-card__trend dv-kpi-card__trend--overdue">
+          <span class="material-symbols-outlined">warning</span>
+          <span>Action requise</span>
+        </div>
+      </div>
+
+    </div><!-- /dv-kpi-row -->
+
+    <!-- ── CHARTS ROW ───────────────────────────────────── -->
+    <div class="dv-charts-row">
+
+      <!-- Revenue bar chart (2/3) -->
+      <div class="dv-card dv-chart-revenue">
+        <div class="dv-card__header">
+          <h3 class="dv-card__title">Évolution du CA facturé</h3>
+          <span class="dv-period-badge">12 Mois</span>
+        </div>
+        <div echarts [options]="revenueChartOptions" class="dv-chart-canvas"></div>
+      </div>
+
+      <!-- Status donut (1/3) -->
+      <div class="dv-card dv-chart-donut">
+        <h3 class="dv-card__title">Répartition par statut</h3>
+        <div echarts [options]="donutChartOptions" class="dv-donut-canvas"></div>
+        <div class="dv-donut-legend">
+          @for (item of statusData; track item.status) {
+            <div class="dv-donut-legend__item">
+              <span class="dv-donut-legend__dot dv-donut-legend__dot--{{ item.status }}"></span>
+              <span class="dv-donut-legend__name">{{ item.label }}</span>
+              <span class="dv-donut-legend__count">{{ item.count }}</span>
+            </div>
+          }
+        </div>
+      </div>
+
+    </div><!-- /dv-charts-row -->
+
+    <!-- ── RECENT INVOICES TABLE ─────────────────────────── -->
+    <div class="dv-card dv-table-card">
+      <div class="dv-table-card__header">
+        <h3 class="dv-card__title">Factures récentes</h3>
+        <a routerLink="/invoices" class="dv-table-card__view-all">
+          Voir tout <span class="material-symbols-outlined">arrow_forward</span>
+        </a>
+      </div>
+      <div class="dv-table-wrapper">
+        <table class="dv-table">
+          <thead>
+            <tr>
+              <th>Numéro</th>
+              <th>Client</th>
+              <th>Date</th>
+              <th class="dv-table__cell--right">Montant</th>
+              <th>Statut</th>
+              <th class="dv-table__cell--center">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (inv of recentInvoices(); track inv.number) {
+              <tr class="dv-table__row">
+                <td class="dv-table__cell--number">{{ inv.number }}</td>
+                <td>{{ inv.client }}</td>
+                <td>{{ inv.date }}</td>
+                <td class="dv-table__cell--right dv-table__cell--mono">{{ inv.amount }}</td>
+                <td>
+                  <span class="dv-badge dv-badge--{{ inv.status }}">{{ inv.label }}</span>
+                </td>
+                <td class="dv-table__cell--center">
+                  <button class="dv-table__action-btn">
+                    <span class="material-symbols-outlined">more_vert</span>
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div><!-- /dv-table-card -->
+
+  </div>
 </div>

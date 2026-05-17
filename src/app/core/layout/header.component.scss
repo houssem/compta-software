@@ -1,0 +1,94 @@
+:host {
+  display: block;
+  flex-shrink: 0;
+}
+
+.app-header {
+  height: 56px;
+  background: var(--color-surface-container-lowest);
+  border-bottom: 1px solid var(--color-border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--spacing-gutter);
+  z-index: 70;
+  font-family: var(--font-family);
+}
+
+.app-header__brand {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: opacity 0.15s;
+  &:hover { opacity: 0.8; }
+}
+
+.app-header__right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* ── Authenticated state ─── */
+.app-header__logout {
+  font-family: var(--font-family);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-primary);
+  background: transparent;
+  border: 1px solid var(--color-primary);
+  border-radius: 4px;
+  padding: 6px 16px;
+  cursor: pointer;
+  transition: background 0.15s;
+  &:hover { background: var(--color-surface-container-low); }
+}
+
+.app-header__icon {
+  font-size: 22px;
+  color: var(--color-on-surface-variant);
+  cursor: pointer;
+  user-select: none;
+}
+
+.app-header__avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border-subtle);
+}
+
+/* ── Public state ─── */
+.app-header__link {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-primary);
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  transition: background 0.15s;
+  &:hover { background: var(--color-surface-container-low); }
+  &--active { font-weight: 700; border-bottom: 2px solid var(--color-primary); }
+}
+
+.app-header__btn-register {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-on-primary);
+  background: var(--color-primary);
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: filter 0.15s;
+  &:hover { filter: brightness(1.15); }
+}

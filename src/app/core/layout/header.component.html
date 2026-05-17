@@ -1,0 +1,17 @@
+<header class="app-header">
+  <div class="app-header__left">
+    <a routerLink="/" class="app-header__brand">Module de facturation</a>
+  </div>
+
+  <div class="app-header__right">
+    @if (isLoggedIn()) {
+      <button class="app-header__logout" (click)="logout()">Déconnexion</button>
+      <span class="material-symbols-outlined app-header__icon">notifications</span>
+      <span class="material-symbols-outlined app-header__icon">settings</span>
+      <div class="app-header__avatar">{{ userInitial() }}</div>
+    } @else {
+      <a routerLink="/login" routerLinkActive="app-header__link--active" class="app-header__link">Connexion</a>
+      <a routerLink="/login" class="app-header__btn-register">S'inscrire</a>
+    }
+  </div>
+</header>

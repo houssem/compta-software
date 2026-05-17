@@ -1,41 +1,88 @@
-<div class="flex h-screen overflow-hidden">
-  <!-- Sidebar -->
-  <aside class="surface-card border-right-1 surface-border flex flex-column" style="width: 240px; flex-shrink: 0">
-    <div class="p-4 border-bottom-1 surface-border">
-      <span class="text-xl font-bold text-primary">Facturation</span>
-    </div>
-    <nav class="flex flex-column p-2 gap-1 flex-1">
-      <a routerLink="/" routerLinkActive="surface-hover"
-         [routerLinkActiveOptions]="{exact: true}"
-         class="flex align-items-center gap-2 p-3 border-round text-color no-underline hover:surface-hover cursor-pointer">
-        <i class="pi pi-home"></i>
-        <span>Accueil</span>
+<div class="layout-body">
+
+  <!-- SIDEBAR (desktop only) -->
+  <aside class="layout-sidebar">
+    <nav class="layout-nav">
+
+      <!-- SALES -->
+      <div class="layout-nav__group-label">Sales</div>
+      <a routerLink="/dashboard-vente"
+         routerLinkActive="layout-nav__link--active"
+         class="layout-nav__link">
+        <span class="material-symbols-outlined">dashboard</span>
+        <span>Dashboard</span>
       </a>
-      <a routerLink="/dashboard" routerLinkActive="surface-hover"
-         class="flex align-items-center gap-2 p-3 border-round text-color no-underline hover:surface-hover cursor-pointer">
-        <i class="pi pi-chart-bar"></i>
-        <span>Tableau de bord</span>
+      <a routerLink="/invoices" routerLinkActive="layout-nav__link--active" class="layout-nav__link">
+        <span class="material-symbols-outlined">description</span>
+        <span>Invoices</span>
       </a>
+      <a routerLink="/quotes" routerLinkActive="layout-nav__link--active" class="layout-nav__link">
+        <span class="material-symbols-outlined">request_quote</span>
+        <span>Quotes</span>
+      </a>
+      <a routerLink="/customers" routerLinkActive="layout-nav__link--active" class="layout-nav__link">
+        <span class="material-symbols-outlined">group</span>
+        <span>Customers</span>
+      </a>
+
+      <!-- PURCHASES -->
+      <div class="layout-nav__group-label">Purchases</div>
+      <a routerLink="/dashboard-achat" routerLinkActive="layout-nav__link--active" class="layout-nav__link">
+        <span class="material-symbols-outlined">dashboard</span>
+        <span>Dashboard</span>
+      </a>
+      <a routerLink="/bills" routerLinkActive="layout-nav__link--active" class="layout-nav__link">
+        <span class="material-symbols-outlined">receipt_long</span>
+        <span>Bills</span>
+      </a>
+      <a routerLink="/suppliers" routerLinkActive="layout-nav__link--active" class="layout-nav__link">
+        <span class="material-symbols-outlined">precision_manufacturing</span>
+        <span>Suppliers</span>
+      </a>
+
+      <!-- GENERAL -->
+      <div class="layout-nav__group-label">General</div>
+      <a routerLink="/reports" routerLinkActive="layout-nav__link--active" class="layout-nav__link">
+        <span class="material-symbols-outlined">assessment</span>
+        <span>Reports</span>
+      </a>
+      <a routerLink="/settings" routerLinkActive="layout-nav__link--active" class="layout-nav__link">
+        <span class="material-symbols-outlined">settings</span>
+        <span>Settings</span>
+      </a>
+
     </nav>
-    <div class="p-3 border-top-1 surface-border">
-      <p-button
-        label="Déconnexion"
-        icon="pi pi-sign-out"
-        [text]="true"
-        severity="secondary"
-        styleClass="w-full"
-        (onClick)="logout()" />
+
+    <div class="layout-sidebar__footer">
+      <p class="layout-sidebar__footer-brand">Accounting Suite</p>
+      <p class="layout-sidebar__footer-copy">© 2026 Facturation</p>
     </div>
   </aside>
 
-  <!-- Main content -->
-  <div class="flex flex-column flex-1 overflow-hidden">
-    <!-- Topbar -->
-    <header class="surface-card border-bottom-1 surface-border flex align-items-center justify-content-end px-4" style="height: 56px; flex-shrink: 0">
-      <span class="text-color-secondary text-sm">{{ userName() }}</span>
-    </header>
-    <main class="flex-1 overflow-auto p-4 surface-ground">
-      <router-outlet />
-    </main>
-  </div>
+  <!-- MAIN CONTENT -->
+  <main class="layout-main">
+    <router-outlet />
+  </main>
+
 </div>
+
+<!-- MOBILE BOTTOM NAV (hidden on md+) -->
+<nav class="layout-bottom-nav">
+  <a routerLink="/dashboard-vente" routerLinkActive="layout-bottom-nav__item--active"
+     class="layout-bottom-nav__item">
+    <span class="material-symbols-outlined">dashboard</span>
+    <span>Dash</span>
+  </a>
+  <a routerLink="/invoices" routerLinkActive="layout-bottom-nav__item--active" class="layout-bottom-nav__item">
+    <span class="material-symbols-outlined">description</span>
+    <span>Invoices</span>
+  </a>
+  <a routerLink="/customers" routerLinkActive="layout-bottom-nav__item--active" class="layout-bottom-nav__item">
+    <span class="material-symbols-outlined">group</span>
+    <span>Clients</span>
+  </a>
+  <a routerLink="/settings" routerLinkActive="layout-bottom-nav__item--active" class="layout-bottom-nav__item">
+    <span class="material-symbols-outlined">settings</span>
+    <span>More</span>
+  </a>
+</nav>

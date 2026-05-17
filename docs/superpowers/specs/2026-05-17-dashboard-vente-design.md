@@ -125,9 +125,14 @@ Each card: white surface, 1px border, 4px left color bar, shadow-sm
 
 ## 5. Routing
 
-No route changes. `/dashboard` stays as is, protected by `authGuard`, rendered inside `MainLayoutComponent`.
+| Path | Component | Guard |
+|---|---|---|
+| `/dashboard-vente` | `DashboardVenteComponent` | `authGuard` |
+| `/dashboard` | redirect → `/dashboard-vente` | — |
 
-Sidebar links for Invoices, Quotes, Customers, Bills, Suppliers, Reports, Settings are **placeholder hrefs** (`#`) — those features are not built yet.
+The old `/dashboard` route redirects to `/dashboard-vente` to avoid broken links.
+
+Sidebar "Sales > Dashboard" link points to `/dashboard-vente`. All other sidebar links (Invoices, Quotes, Customers, Bills, Suppliers, Reports, Settings) are **placeholder hrefs** (`#`) — those features are not built yet.
 
 ---
 
@@ -138,9 +143,10 @@ Sidebar links for Invoices, Quotes, Customers, Bills, Suppliers, Reports, Settin
 | `core/layout/main-layout.component.html` | Rewrite |
 | `core/layout/main-layout.component.ts` | Add styleUrls, imports |
 | `core/layout/main-layout.component.scss` | Create |
-| `features/dashboard/dashboard.component.html` | Rewrite |
-| `features/dashboard/dashboard.component.ts` | Simplify (remove sub-component imports) |
-| `features/dashboard/dashboard.component.scss` | Rewrite |
+| `features/dashboard-vente/dashboard-vente.component.html` | Create (replaces dashboard) |
+| `features/dashboard-vente/dashboard-vente.component.ts` | Create |
+| `features/dashboard-vente/dashboard-vente.component.scss` | Create |
+| `app.routes.ts` | Add `/dashboard-vente` route + `/dashboard` redirect |
 | `features/dashboard/components/kpi-card.*` | Delete |
 | `features/dashboard/components/revenue-chart.*` | Delete |
 | `features/dashboard/components/status-donut.*` | Delete |
