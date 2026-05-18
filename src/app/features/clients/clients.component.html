@@ -1,0 +1,139 @@
+<div class="cl-page">
+
+  <!-- PAGE HEADER -->
+  <div class="cl-header">
+    <div class="cl-header__info">
+      <h1 class="cl-header__title">Clients</h1>
+      <p class="cl-header__sub">Gérez votre base de clients et suivez leurs paiements.</p>
+    </div>
+    <div class="cl-header__actions">
+      <div class="cl-search-wrapper">
+        <span class="material-symbols-outlined cl-search-icon">search</span>
+        <input
+          class="cl-search"
+          type="text"
+          placeholder="Rechercher un client..."
+          [ngModel]="searchQuery()"
+          (ngModelChange)="onSearchChange($event)"
+        />
+      </div>
+      <a routerLink="/client/create" class="cl-btn cl-btn--primary">
+        <span class="material-symbols-outlined">person_add</span>
+        Nouveau Client
+      </a>
+    </div>
+  </div>
+
+  <!-- KPI STRIP -->
+  <div class="cl-kpi-strip">
+    <div class="cl-kpi cl-kpi--blue">
+      <p class="cl-kpi__label">Total Clients</p>
+      <p class="cl-kpi__value">
+        {{ totalClients.toLocaleString('fr-FR') }}
+        <span class="cl-kpi__badge cl-kpi__badge--green">+4%</span>
+      </p>
+    </div>
+    <div class="cl-kpi cl-kpi--amber">
+      <p class="cl-kpi__label">Nouveaux (30j)</p>
+      <p class="cl-kpi__value">
+        {{ nouveaux30j }}
+        <span class="cl-kpi__trend material-symbols-outlined">trending_up</span>
+      </p>
+    </div>
+    <div class="cl-kpi cl-kpi--red">
+      <p class="cl-kpi__label">Solde Global Dû</p>
+      <p class="cl-kpi__value cl-kpi__value--danger">{{ formatAmount(soldeGlobalDu) }}</p>
+    </div>
+  </div>
+
+  <!-- CLIENTS TABLE -->
+  <div class="cl-card">
+    <div class="cl-table-wrapper">
+      <table class="cl-table">
+        <thead>
+          <tr>
+            <th class="cl-th">Nom du Client</th>
+            <th class="cl-th">Contact</th>
+            <th class="cl-th">Email</th>
+            <th class="cl-th cl-th--center">Factures en Attente</th>
+            <th class="cl-th cl-th--right">Solde Dû</th>
+            <th class="cl-th cl-th--center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (pagedClients().length === 0) {
+            <tr>
+              <td colspan="6" class="cl-td cl-empty">Aucun client trouvé.</td>
+            </tr>
+          }
+          @for (client of pagedClients(); track client.id) {
+            <tr class="cl-tr">
+              <td class="cl-td">
+                <span class="cl-client-name">{{ client.nom }}</span>
+              </td>
+              <td class="cl-td cl-td--muted">{{ client.contact }}</td>
+              <td class="cl-td">
+                <a class="cl-email-link" href="mailto:{{ client.email }}">{{ client.email }}</a>
+              </td>
+              <td class="cl-td cl-td--center">
+                <span class="cl-badge cl-badge--{{ client.factureStatus }}">
+                  {{ factureLabel(client) }}
+                </span>
+              </td>
+              <td class="cl-td cl-td--amount">
+                <span [class.cl-amount--danger]="client.soldeDu > 0">
+                  {{ formatAmount(client.soldeDu) }}
+                </span>
+              </td>
+              <td class="cl-td cl-td--center">
+                <button type="button" class="cl-row-action" title="Actions">
+                  <span class="material-symbols-outlined">more_horiz</span>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- PAGINATION -->
+    <div class="cl-pagination">
+      <span class="cl-pagination__info">
+        Affichage de {{ pageStart() }} à {{ pageEnd() }} sur {{ filteredClients().length.toLocaleString('fr-FR') }} clients
+      </span>
+      <div class="cl-pagination__controls">
+        <button
+          type="button"
+          class="cl-page-btn"
+          [disabled]="currentPage() === 1"
+          (click)="goToPage(currentPage() - 1)"
+        >
+          <span class="material-symbols-outlined">chevron_left</span>
+        </button>
+
+        @for (p of visiblePages(); track $index) {
+          @if (p === '...') {
+            <span class="cl-page-ellipsis">…</span>
+          } @else {
+            <button
+              type="button"
+              class="cl-page-btn"
+              [class.cl-page-btn--active]="p === currentPage()"
+              (click)="goToPage(+p)"
+            >{{ p }}</button>
+          }
+        }
+
+        <button
+          type="button"
+          class="cl-page-btn"
+          [disabled]="currentPage() === totalPages()"
+          (click)="goToPage(currentPage() + 1)"
+        >
+          <span class="material-symbols-outlined">chevron_right</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>

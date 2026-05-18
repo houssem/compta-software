@@ -1,0 +1,206 @@
+<div class="inv-page">
+
+  <!-- PAGE HEADER -->
+  <div class="inv-header">
+    <div class="inv-header__info">
+      <h1 class="inv-header__title">Factures</h1>
+      <p class="inv-header__sub">Gérez vos engagements financiers et le cycle de paiement.</p>
+    </div>
+    <div class="inv-header__actions">
+      <a routerLink="/invoice/create" class="inv-btn inv-btn--primary">
+        <span class="material-symbols-outlined">add</span>
+        Create New Invoice
+      </a>
+      <button type="button" class="inv-btn inv-btn--outline">
+        <span class="material-symbols-outlined">upload</span>
+        Upload Invoice
+      </button>
+    </div>
+  </div>
+
+  <!-- KPI ROW -->
+  <div class="inv-kpi-row">
+
+    <!-- Total à payer -->
+    <div class="inv-kpi inv-kpi--blue">
+      <p class="inv-kpi__label">Total à payer</p>
+      <p class="inv-kpi__value">{{ formatAmount(totalAPayer) }}</p>
+      <p class="inv-kpi__trend inv-kpi__trend--up">
+        <span class="material-symbols-outlined">trending_up</span>
+        +4.2% par rapport au mois dernier
+      </p>
+    </div>
+
+    <!-- Reçues récemment -->
+    <div class="inv-kpi inv-kpi--amber">
+      <p class="inv-kpi__label">Reçues récemment (7j)</p>
+      <p class="inv-kpi__value inv-kpi__value--count">{{ recuesCount }} <span>Factures</span></p>
+      <p class="inv-kpi__sub">En attente de validation : {{ enAttenteCount }}</p>
+    </div>
+
+    <!-- Total en retard -->
+    <div class="inv-kpi inv-kpi--red">
+      <p class="inv-kpi__label">Total en retard</p>
+      <p class="inv-kpi__value inv-kpi__value--danger">{{ formatAmount(totalEnRetard) }}</p>
+      <p class="inv-kpi__action-required">ACTION REQUISE IMMÉDIATEMENT</p>
+    </div>
+
+  </div>
+
+  <!-- INVOICE TABLE CARD -->
+  <div class="inv-card">
+    <div class="inv-table-header">
+      <h2 class="inv-table-title">Liste des factures</h2>
+      <div class="inv-table-controls">
+        <!-- Search -->
+        <div class="inv-search-wrapper">
+          <span class="material-symbols-outlined inv-search-icon">search</span>
+          <input
+            class="inv-search"
+            type="text"
+            placeholder="Rechercher..."
+            [ngModel]="searchQuery()"
+            (ngModelChange)="onSearchChange($event)"
+          />
+        </div>
+        <!-- Status filter -->
+        <select
+          class="inv-filter-select"
+          [ngModel]="statusFilter()"
+          (ngModelChange)="onStatusChange($event)"
+        >
+          @for (opt of statusOptions; track opt.value) {
+            <option [value]="opt.value">{{ opt.label }}</option>
+          }
+        </select>
+        <!-- Actions -->
+        <button type="button" class="inv-btn-ghost">
+          <span class="material-symbols-outlined">filter_list</span>
+          Filtrer
+        </button>
+        <button type="button" class="inv-btn-ghost">
+          <span class="material-symbols-outlined">download</span>
+          Exporter
+        </button>
+      </div>
+    </div>
+
+    <div class="inv-table-wrapper">
+      <table class="inv-table">
+        <thead>
+          <tr>
+            <th class="inv-th">Client</th>
+            <th class="inv-th">Date Facture</th>
+            <th class="inv-th">Échéance</th>
+            <th class="inv-th inv-th--right">Montant (TTC)</th>
+            <th class="inv-th">Statut</th>
+            <th class="inv-th inv-th--center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (pagedInvoices().length === 0) {
+            <tr>
+              <td colspan="6" class="inv-td inv-empty">Aucune facture trouvée.</td>
+            </tr>
+          }
+          @for (inv of pagedInvoices(); track inv.id) {
+            <tr class="inv-tr">
+              <td class="inv-td">
+                <div class="inv-client">
+                  <span class="inv-avatar" [style.background]="inv.avatarColor">{{ inv.initial }}</span>
+                  <div class="inv-client__info">
+                    <span class="inv-client__name">{{ inv.client }}</span>
+                    <span class="inv-client__id">{{ inv.id }}</span>
+                  </div>
+                </div>
+              </td>
+              <td class="inv-td inv-td--date">{{ inv.dateFacture }}</td>
+              <td class="inv-td" [class.inv-td--overdue]="inv.echeanceOverdue">{{ inv.echeance }}</td>
+              <td class="inv-td inv-td--amount">{{ formatAmount(inv.montantTTC) }}</td>
+              <td class="inv-td">
+                <span class="inv-badge inv-badge--{{ inv.statut }}">
+                  {{ statusLabels[inv.statut] }}
+                </span>
+              </td>
+              <td class="inv-td inv-td--center">
+                <button type="button" class="inv-row-action" title="Actions">
+                  <span class="material-symbols-outlined">more_vert</span>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- PAGINATION -->
+    <div class="inv-pagination">
+      <span class="inv-pagination__info">
+        Affichage de {{ (currentPage() - 1) * 5 + 1 }}-{{ pageEnd() }}
+        sur {{ filteredInvoices().length }} factures
+      </span>
+      <div class="inv-pagination__controls">
+        <button
+          type="button"
+          class="inv-page-btn"
+          [disabled]="currentPage() === 1"
+          (click)="goToPage(currentPage() - 1)"
+        >
+          <span class="material-symbols-outlined">chevron_left</span>
+        </button>
+        @for (p of pages(); track p) {
+          <button
+            type="button"
+            class="inv-page-btn"
+            [class.inv-page-btn--active]="p === currentPage()"
+            (click)="goToPage(p)"
+          >{{ p }}</button>
+        }
+        <button
+          type="button"
+          class="inv-page-btn"
+          [disabled]="currentPage() === totalPages()"
+          (click)="goToPage(currentPage() + 1)"
+        >
+          <span class="material-symbols-outlined">chevron_right</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM ROW -->
+  <div class="inv-bottom-row">
+
+    <!-- Recent Activity -->
+    <div class="inv-card inv-activity">
+      <div class="inv-activity__header">
+        <span class="material-symbols-outlined inv-activity__icon">history</span>
+        <h2 class="inv-activity__title">Activités récentes</h2>
+      </div>
+      <ul class="inv-activity__list">
+        @for (act of activities; track act.text) {
+          <li class="inv-activity__item">
+            <span class="inv-activity__dot inv-activity__dot--{{ act.dot }}"></span>
+            <div>
+              <p class="inv-activity__text" [innerHTML]="act.text"></p>
+              <p class="inv-activity__sub">{{ act.sub }}</p>
+            </div>
+          </li>
+        }
+      </ul>
+    </div>
+
+    <!-- OCR Promo -->
+    <div class="inv-ocr-card">
+      <div class="inv-ocr-card__header">
+        <h2 class="inv-ocr-card__title">Besoin d'aide avec l'OCR&nbsp;?</h2>
+      </div>
+      <p class="inv-ocr-card__body">
+        Notre intelligence artificielle analyse vos factures automatiquement pour gagner du temps sur la saisie manuelle.
+      </p>
+      <button type="button" class="inv-ocr-card__btn">En savoir plus</button>
+    </div>
+
+  </div>
+
+</div>

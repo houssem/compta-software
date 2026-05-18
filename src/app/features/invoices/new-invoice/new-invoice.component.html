@@ -1,0 +1,290 @@
+<div class="ni-page">
+
+  <!-- PAGE HEADER -->
+  <header class="ni-header">
+    <div class="ni-header__left">
+      <a routerLink="/invoices" class="ni-back-link">
+        <span class="material-symbols-outlined">arrow_back</span>
+      </a>
+      <h1 class="ni-header__title">Create New Invoice</h1>
+    </div>
+  </header>
+
+  <!-- TWO-COLUMN BODY -->
+  <div class="ni-body">
+
+    <!-- FORM (left column) -->
+    <div class="ni-form-col">
+
+      <!-- GENERAL INFORMATION -->
+      <section class="ni-card">
+        <h2 class="ni-card__title">General Information</h2>
+        <div class="ni-grid ni-grid--4">
+
+          <!-- Client Name (spans 2) -->
+          <div class="ni-field ni-field--span2">
+            <label class="ni-label">Client Name</label>
+            <div class="ni-input-wrapper">
+              <input
+                class="ni-input"
+                type="text"
+                placeholder="Search or select a client..."
+                [ngModel]="clientName()"
+                (ngModelChange)="clientName.set($event)"
+              />
+              <span class="material-symbols-outlined ni-input-icon-right">person_add</span>
+            </div>
+          </div>
+
+          <!-- Invoice Number (spans 2) -->
+          <div class="ni-field ni-field--span2">
+            <label class="ni-label">Invoice Number</label>
+            <input
+              class="ni-input ni-input--readonly"
+              type="text"
+              readonly
+              [value]="invoiceNumber()"
+            />
+          </div>
+
+          <!-- Issue Date -->
+          <div class="ni-field">
+            <label class="ni-label">Issue Date</label>
+            <input
+              class="ni-input"
+              type="date"
+              [ngModel]="issueDate()"
+              (ngModelChange)="issueDate.set($event)"
+            />
+          </div>
+
+          <!-- Due Date -->
+          <div class="ni-field">
+            <label class="ni-label">Due Date</label>
+            <input
+              class="ni-input"
+              type="date"
+              [ngModel]="dueDate()"
+              (ngModelChange)="dueDate.set($event)"
+            />
+          </div>
+
+          <!-- Currency -->
+          <div class="ni-field">
+            <label class="ni-label">Currency</label>
+            <select
+              class="ni-select"
+              [ngModel]="currency()"
+              (ngModelChange)="currency.set($event)"
+            >
+              @for (c of currencies; track c) {
+                <option [value]="c">{{ c }}</option>
+              }
+            </select>
+          </div>
+
+          <!-- Language -->
+          <div class="ni-field">
+            <label class="ni-label">Language</label>
+            <select
+              class="ni-select"
+              [ngModel]="language()"
+              (ngModelChange)="language.set($event)"
+            >
+              @for (l of languages; track l) {
+                <option [value]="l">{{ l }}</option>
+              }
+            </select>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- LINE ITEMS -->
+      <section class="ni-card">
+        <div class="ni-line-items-header">
+          <h2 class="ni-card__title">Line Items</h2>
+          <button type="button" class="ni-btn-add" (click)="addItem()">
+            <span class="material-symbols-outlined">add_circle</span>
+            Add item
+          </button>
+        </div>
+
+        <div class="ni-table-wrapper">
+          <table class="ni-table">
+            <thead>
+              <tr>
+                <th class="ni-th ni-th--drag"></th>
+                <th class="ni-th">Description</th>
+                <th class="ni-th ni-th--num">QTY</th>
+                <th class="ni-th ni-th--num">Price HT</th>
+                <th class="ni-th ni-th--num">Disc %</th>
+                <th class="ni-th ni-th--num">VAT</th>
+                <th class="ni-th ni-th--num">Total HT</th>
+                <th class="ni-th ni-th--action"></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of lineItems(); track item.id) {
+                <tr class="ni-tr">
+                  <td class="ni-td ni-td--drag">
+                    <span class="material-symbols-outlined ni-drag-handle">drag_indicator</span>
+                  </td>
+                  <td class="ni-td">
+                    <input
+                      class="ni-cell-input"
+                      type="text"
+                      placeholder="Item description"
+                      [ngModel]="item.description"
+                      (ngModelChange)="updateItem(item.id, 'description', $event)"
+                    />
+                  </td>
+                  <td class="ni-td ni-td--num">
+                    <input
+                      class="ni-cell-input ni-cell-input--num"
+                      type="number"
+                      min="1"
+                      [ngModel]="item.qty"
+                      (ngModelChange)="updateItem(item.id, 'qty', +$event)"
+                    />
+                  </td>
+                  <td class="ni-td ni-td--num">
+                    <input
+                      class="ni-cell-input ni-cell-input--num"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      [ngModel]="item.priceHT"
+                      (ngModelChange)="updateItem(item.id, 'priceHT', +$event)"
+                    />
+                  </td>
+                  <td class="ni-td ni-td--num">
+                    <input
+                      class="ni-cell-input ni-cell-input--num"
+                      type="number"
+                      min="0"
+                      max="100"
+                      [ngModel]="item.discPct"
+                      (ngModelChange)="updateItem(item.id, 'discPct', +$event)"
+                    />
+                  </td>
+                  <td class="ni-td ni-td--num">
+                    <select
+                      class="ni-cell-select"
+                      [ngModel]="item.vatPct"
+                      (ngModelChange)="updateItem(item.id, 'vatPct', +$event)"
+                    >
+                      @for (rate of vatRates; track rate) {
+                        <option [value]="rate">{{ rate }}%</option>
+                      }
+                    </select>
+                  </td>
+                  <td class="ni-td ni-td--num ni-td--total">
+                    {{ formatAmount(lineTotal(item)) }}
+                  </td>
+                  <td class="ni-td ni-td--action">
+                    <button
+                      type="button"
+                      class="ni-btn-remove"
+                      (click)="removeItem(item.id)"
+                      title="Remove item"
+                    >
+                      <span class="material-symbols-outlined">delete</span>
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- NOTES & TERMS -->
+      <section class="ni-card ni-card--row">
+        <div class="ni-field ni-field--grow">
+          <label class="ni-label">Internal Notes</label>
+          <textarea
+            class="ni-textarea"
+            placeholder="Add a private note for your team..."
+            rows="4"
+            [ngModel]="internalNotes()"
+            (ngModelChange)="internalNotes.set($event)"
+          ></textarea>
+        </div>
+        <div class="ni-field ni-field--grow">
+          <label class="ni-label">Terms &amp; Conditions</label>
+          <textarea
+            class="ni-textarea"
+            rows="4"
+            [ngModel]="termsAndConditions()"
+            (ngModelChange)="termsAndConditions.set($event)"
+          ></textarea>
+        </div>
+      </section>
+
+    </div><!-- /ni-form-col -->
+
+    <!-- SUMMARY SIDEBAR (right column) -->
+    <aside class="ni-summary">
+
+      <h2 class="ni-summary__title">Summary</h2>
+
+      <div class="ni-summary__totals">
+        <div class="ni-summary__row">
+          <span class="ni-summary__label">Total HT</span>
+          <span class="ni-summary__value">{{ formatAmount(totalHT()) }}</span>
+        </div>
+
+        <div class="ni-summary__vat-block">
+          <p class="ni-summary__vat-label">VAT Breakdown</p>
+          @for (vat of vatBreakdown(); track vat.rate) {
+            <div class="ni-summary__row ni-summary__row--sub">
+              <span class="ni-summary__label">VAT {{ vat.rate }}%</span>
+              <span class="ni-summary__value">{{ formatAmount(vat.amount) }}</span>
+            </div>
+          }
+        </div>
+
+        <div class="ni-summary__ttc-bar"></div>
+
+        <div class="ni-summary__ttc-row">
+          <span class="ni-summary__ttc-label">Total<br><small>TTC</small></span>
+          <span class="ni-summary__ttc-amount">{{ formatAmount(totalTTC()) }}</span>
+        </div>
+      </div>
+
+      <div class="ni-summary__actions">
+        <button type="button" class="ni-btn ni-btn--primary" (click)="sendByEmail()">
+          <span class="material-symbols-outlined">send</span>
+          Send by Email
+        </button>
+        <button type="button" class="ni-btn ni-btn--outline" (click)="save()">
+          <span class="material-symbols-outlined">save</span>
+          Sauvegarder
+        </button>
+        <button type="button" class="ni-btn ni-btn--outline" (click)="preview()">
+          <span class="material-symbols-outlined">visibility</span>
+          Preview
+        </button>
+      </div>
+
+      <p class="ni-summary__saved">Last saved: {{ lastSaved() }}</p>
+
+      <!-- Smart Tip -->
+      <div class="ni-tip">
+        <div class="ni-tip__header">
+          <span class="material-symbols-outlined">lightbulb</span>
+          <span class="ni-tip__title">Smart Tip</span>
+        </div>
+        <p class="ni-tip__body">
+          Based on your history with this client, you usually offer a 5% discount for annual subscriptions.
+          Would you like to apply it now?
+        </p>
+        <button type="button" class="ni-tip__action">Apply discount</button>
+      </div>
+
+    </aside>
+
+  </div><!-- /ni-body -->
+
+</div>

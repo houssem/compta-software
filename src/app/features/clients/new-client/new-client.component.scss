@@ -1,0 +1,323 @@
+/* =====================================================
+   NEW CLIENT PAGE
+   ===================================================== */
+
+:host {
+  display: block;
+  background: var(--color-background);
+  min-height: 100%;
+}
+
+.nc-page {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 24px 32px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  @media (max-width: 768px) {
+    padding: 16px 16px 48px;
+  }
+}
+
+/* =====================================================
+   TOPBAR (breadcrumb + actions)
+   ===================================================== */
+.nc-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.nc-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+}
+.nc-breadcrumb__link {
+  color: var(--color-on-surface-variant);
+  text-decoration: none;
+  &:hover { color: var(--color-primary); text-decoration: underline; }
+}
+.nc-breadcrumb__sep {
+  font-size: 16px;
+  color: var(--color-on-surface-variant);
+  opacity: 0.5;
+}
+.nc-breadcrumb__current {
+  color: var(--color-on-surface);
+  font-weight: 500;
+}
+
+.nc-topbar__actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* =====================================================
+   TITLE
+   ===================================================== */
+.nc-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--color-on-surface);
+  line-height: 32px;
+  margin-top: -4px;
+}
+
+/* =====================================================
+   BUTTONS
+   ===================================================== */
+.nc-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: filter 0.15s, background 0.15s, border-color 0.15s;
+
+  .material-symbols-outlined { font-size: 18px; }
+
+  &--primary {
+    background: var(--color-primary);
+    color: var(--color-on-primary);
+    border: none;
+    &:hover { filter: brightness(1.15); }
+  }
+
+  &--ghost {
+    background: transparent;
+    color: var(--color-on-surface-variant);
+    border: 1px solid var(--color-border-subtle);
+    &:hover {
+      background: var(--color-surface-container-low);
+      color: var(--color-on-surface);
+    }
+  }
+}
+
+/* =====================================================
+   TWO-COLUMN BODY
+   ===================================================== */
+.nc-body {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 20px;
+  align-items: start;
+
+  @media (max-width: 960px)  { grid-template-columns: 1fr 300px; }
+  @media (max-width: 768px)  { grid-template-columns: 1fr; }
+}
+
+.nc-col-main,
+.nc-col-side {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* =====================================================
+   CARDS
+   ===================================================== */
+.nc-card {
+  background: var(--color-surface-container-lowest);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px 24px;
+}
+
+.nc-card__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.nc-card__icon {
+  font-size: 20px;
+  color: var(--color-primary);
+  opacity: 0.7;
+}
+.nc-card__title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-on-surface);
+}
+
+/* =====================================================
+   GRID
+   ===================================================== */
+.nc-grid {
+  display: grid;
+  gap: 16px;
+
+  &--1 { grid-template-columns: 1fr; }
+  &--2 { grid-template-columns: 1fr 1fr; }
+  &--3 { grid-template-columns: repeat(3, 1fr); }
+
+  @media (max-width: 640px) {
+    &--2, &--3 { grid-template-columns: 1fr; }
+  }
+}
+
+/* =====================================================
+   FIELDS
+   ===================================================== */
+.nc-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  &--span2 { grid-column: span 2; }
+}
+
+.nc-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-on-surface-variant);
+}
+
+/* =====================================================
+   INPUTS / SELECTS / TEXTAREA
+   ===================================================== */
+%field-base {
+  height: 40px;
+  width: 100%;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-container-lowest);
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--color-on-surface);
+  padding: 0 12px;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+
+  &:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(0, 30, 64, 0.1);
+  }
+  &::placeholder { color: var(--color-on-surface-variant); opacity: 0.6; }
+}
+
+.nc-input {
+  @extend %field-base;
+
+  &--readonly {
+    background: var(--color-surface-container-low);
+    color: var(--color-on-surface-variant);
+    cursor: default;
+  }
+
+  &--icon { padding-left: 36px; }
+}
+
+.nc-input-icon-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.nc-input-icon {
+  position: absolute;
+  left: 10px;
+  font-size: 16px;
+  color: var(--color-on-surface-variant);
+  pointer-events: none;
+}
+
+.nc-select {
+  @extend %field-base;
+  appearance: none;
+  cursor: pointer;
+  padding-right: 32px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='%2343474f'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 18px;
+}
+
+.nc-textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-container-lowest);
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--color-on-surface);
+  resize: vertical;
+  outline: none;
+  line-height: 1.5;
+  transition: border-color 0.15s, box-shadow 0.15s;
+
+  &:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(0, 30, 64, 0.1);
+  }
+  &::placeholder { color: var(--color-on-surface-variant); opacity: 0.6; }
+}
+
+/* =====================================================
+   BOTTOM BANNER
+   ===================================================== */
+.nc-banner {
+  background: var(--color-primary);
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  overflow: hidden;
+}
+
+.nc-banner__content {
+  flex: 1;
+}
+
+.nc-banner__title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--color-on-primary);
+  margin-bottom: 10px;
+}
+
+.nc-banner__body {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.6;
+  max-width: 640px;
+
+  strong {
+    color: var(--color-on-primary);
+    font-weight: 600;
+  }
+}
+
+.nc-banner__illustration {
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .material-symbols-outlined {
+    font-size: 36px;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  @media (max-width: 480px) { display: none; }
+}

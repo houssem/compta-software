@@ -1,0 +1,169 @@
+<div class="nc-page">
+
+  <!-- BREADCRUMB + HEADER -->
+  <div class="nc-topbar">
+    <nav class="nc-breadcrumb">
+      <a routerLink="/customers" class="nc-breadcrumb__link">Customers</a>
+      <span class="material-symbols-outlined nc-breadcrumb__sep">chevron_right</span>
+      <span class="nc-breadcrumb__current">New Customer</span>
+    </nav>
+    <div class="nc-topbar__actions">
+      <button type="button" class="nc-btn nc-btn--ghost" (click)="cancel()">Cancel</button>
+      <button type="button" class="nc-btn nc-btn--primary" (click)="save()">
+        <span class="material-symbols-outlined">save</span>
+        Save Customer
+      </button>
+    </div>
+  </div>
+
+  <h1 class="nc-title">New Customer Profile</h1>
+
+  <!-- TWO-COLUMN BODY -->
+  <div class="nc-body">
+
+    <!-- LEFT COLUMN -->
+    <div class="nc-col-main">
+
+      <!-- General Information -->
+      <section class="nc-card">
+        <div class="nc-card__header">
+          <span class="material-symbols-outlined nc-card__icon">business</span>
+          <h2 class="nc-card__title">General Information</h2>
+        </div>
+        <div class="nc-grid nc-grid--2">
+          <div class="nc-field">
+            <label class="nc-label">Company Name</label>
+            <input class="nc-input" type="text" placeholder="Acme Corp International"
+              [ngModel]="companyName()" (ngModelChange)="companyName.set($event)" />
+          </div>
+          <div class="nc-field">
+            <label class="nc-label">Customer Reference (Auto-gen)</label>
+            <input class="nc-input nc-input--readonly" type="text" readonly [value]="reference()" />
+          </div>
+          <div class="nc-field nc-field--span2">
+            <label class="nc-label">Website</label>
+            <div class="nc-input-icon-wrap">
+              <span class="material-symbols-outlined nc-input-icon">language</span>
+              <input class="nc-input nc-input--icon" type="url" placeholder="https://www.acme.com"
+                [ngModel]="website()" (ngModelChange)="website.set($event)" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Primary Contact -->
+      <section class="nc-card">
+        <div class="nc-card__header">
+          <span class="material-symbols-outlined nc-card__icon">person</span>
+          <h2 class="nc-card__title">Primary Contact</h2>
+        </div>
+        <div class="nc-grid nc-grid--3">
+          <div class="nc-field">
+            <label class="nc-label">Full Name</label>
+            <input class="nc-input" type="text" placeholder="John Doe"
+              [ngModel]="fullName()" (ngModelChange)="fullName.set($event)" />
+          </div>
+          <div class="nc-field">
+            <label class="nc-label">Email Address</label>
+            <input class="nc-input" type="email" placeholder="john.doe@company.com"
+              [ngModel]="email()" (ngModelChange)="email.set($event)" />
+          </div>
+          <div class="nc-field">
+            <label class="nc-label">Phone Number</label>
+            <input class="nc-input" type="tel" placeholder="+1 (555) 000-0000"
+              [ngModel]="phone()" (ngModelChange)="phone.set($event)" />
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="nc-col-side">
+
+      <!-- Billing Address -->
+      <section class="nc-card">
+        <div class="nc-card__header">
+          <span class="material-symbols-outlined nc-card__icon">location_on</span>
+          <h2 class="nc-card__title">Billing Address</h2>
+        </div>
+        <div class="nc-grid nc-grid--1">
+          <div class="nc-field">
+            <label class="nc-label">Street</label>
+            <textarea class="nc-textarea" rows="2" placeholder="123 Financial District, Suite 400"
+              [ngModel]="street()" (ngModelChange)="street.set($event)"></textarea>
+          </div>
+          <div class="nc-grid nc-grid--2">
+            <div class="nc-field">
+              <label class="nc-label">City</label>
+              <input class="nc-input" type="text" placeholder="Paris"
+                [ngModel]="city()" (ngModelChange)="city.set($event)" />
+            </div>
+            <div class="nc-field">
+              <label class="nc-label">Postal Code</label>
+              <input class="nc-input" type="text" placeholder="75001"
+                [ngModel]="postalCode()" (ngModelChange)="postalCode.set($event)" />
+            </div>
+          </div>
+          <div class="nc-field">
+            <label class="nc-label">Country</label>
+            <select class="nc-select" [ngModel]="country()" (ngModelChange)="country.set($event)">
+              @for (c of countries; track c) {
+                <option [value]="c">{{ c }}</option>
+              }
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- Financial Details -->
+      <section class="nc-card">
+        <div class="nc-card__header">
+          <span class="material-symbols-outlined nc-card__icon">account_balance</span>
+          <h2 class="nc-card__title">Financial Details</h2>
+        </div>
+        <div class="nc-grid nc-grid--1">
+          <div class="nc-field">
+            <label class="nc-label">Tax ID / VAT Number</label>
+            <input class="nc-input" type="text" placeholder="FR 12 345 678 901"
+              [ngModel]="taxId()" (ngModelChange)="taxId.set($event)" />
+          </div>
+          <div class="nc-field">
+            <label class="nc-label">Currency</label>
+            <select class="nc-select" [ngModel]="currency()" (ngModelChange)="currency.set($event)">
+              @for (c of currencies; track c.value) {
+                <option [value]="c.value">{{ c.label }}</option>
+              }
+            </select>
+          </div>
+          <div class="nc-field">
+            <label class="nc-label">Payment Terms</label>
+            <select class="nc-select" [ngModel]="paymentTerms()" (ngModelChange)="paymentTerms.set($event)">
+              @for (t of paymentTermsOptions; track t) {
+                <option [value]="t">{{ t }}</option>
+              }
+            </select>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+  </div><!-- /nc-body -->
+
+  <!-- BOTTOM BANNER -->
+  <div class="nc-banner">
+    <div class="nc-banner__content">
+      <h3 class="nc-banner__title">Account Setup Finalization</h3>
+      <p class="nc-banner__body">
+        Upon saving, this customer will be immediately available for invoice generation and quote drafting.
+        Precision Ledger will automatically track all transactions against the unique reference number
+        <strong>{{ reference() }}</strong>.
+      </p>
+    </div>
+    <div class="nc-banner__illustration">
+      <span class="material-symbols-outlined">menu_book</span>
+    </div>
+  </div>
+
+</div>

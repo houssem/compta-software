@@ -43,3 +43,4 @@ Thumbs.db
 
 # Session memory
 .remember/
+.remember/**
