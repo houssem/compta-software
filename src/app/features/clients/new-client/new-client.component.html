@@ -8,10 +8,19 @@
       <span class="nc-breadcrumb__current">{{ 'NEW_CLIENT.BREADCRUMB_CURRENT' | translate }}</span>
     </nav>
     <div class="nc-topbar__actions">
-      <button type="button" class="nc-btn nc-btn--ghost" (click)="cancel()">{{ 'NEW_CLIENT.CANCEL' | translate }}</button>
-      <button type="button" class="nc-btn nc-btn--primary" (click)="save()">
-        <span class="material-symbols-outlined">save</span>
-        {{ 'NEW_CLIENT.SAVE' | translate }}
+      @if (errorMsg()) {
+        <span class="nc-error-msg">{{ errorMsg() }}</span>
+      }
+      <button type="button" class="nc-btn nc-btn--ghost" (click)="cancel()" [disabled]="loading()">
+        {{ 'NEW_CLIENT.CANCEL' | translate }}
+      </button>
+      <button type="button" class="nc-btn nc-btn--primary" (click)="save()" [disabled]="loading()">
+        @if (loading()) {
+          <span class="material-symbols-outlined nc-spin">progress_activity</span>
+        } @else {
+          <span class="material-symbols-outlined">save</span>
+        }
+        {{ loading() ? ('NEW_CLIENT.SAVING' | translate) : ('NEW_CLIENT.SAVE' | translate) }}
       </button>
     </div>
   </div>
@@ -35,10 +44,6 @@
             <label class="nc-label">{{ 'NEW_CLIENT.COMPANY_NAME' | translate }}</label>
             <input class="nc-input" type="text" [placeholder]="'NEW_CLIENT.COMPANY_PLACEHOLDER' | translate"
               [ngModel]="companyName()" (ngModelChange)="companyName.set($event)" />
-          </div>
-          <div class="nc-field">
-            <label class="nc-label">{{ 'NEW_CLIENT.REFERENCE' | translate }}</label>
-            <input class="nc-input nc-input--readonly" type="text" readonly [value]="reference()" />
           </div>
           <div class="nc-field nc-field--span2">
             <label class="nc-label">{{ 'NEW_CLIENT.WEBSITE' | translate }}</label>
