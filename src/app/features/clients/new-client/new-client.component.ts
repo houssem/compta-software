@@ -77,7 +77,7 @@ export class NewClientComponent {
     }
 
     this.clientService.create(dto).subscribe({
-      next: () => this.router.navigate(['/customers']),
+      next: () => { this.loading.set(false); this.router.navigate(['/customers']) },
       error: (e) => {
         this.errorMsg.set(e?.error?.message ?? 'Une erreur est survenue. Veuillez réessayer.')
         this.loading.set(false)
