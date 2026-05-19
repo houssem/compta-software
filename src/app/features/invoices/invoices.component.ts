@@ -2,6 +2,7 @@ import { Component, computed, signal } from '@angular/core'
 import { RouterLink } from '@angular/router'
 import { CommonModule } from '@angular/common'
 import { FormsModule } from '@angular/forms'
+import { TranslateModule } from '@ngx-translate/core'
 
 type InvoiceStatus = 'overdue' | 'paid' | 'pending' | 'approved' | 'draft' | 'sent'
 
@@ -26,7 +27,7 @@ interface Activity {
 @Component({
   selector: 'app-invoices',
   standalone: true,
-  imports: [RouterLink, CommonModule, FormsModule],
+  imports: [RouterLink, CommonModule, FormsModule, TranslateModule],
   templateUrl: './invoices.component.html',
   styleUrl: './invoices.component.scss'
 })
@@ -35,15 +36,6 @@ export class InvoicesComponent {
   statusFilter = signal<InvoiceStatus | ''>('')
   currentPage = signal(1)
   readonly pageSize = 5
-
-  readonly statusLabels: Record<InvoiceStatus, string> = {
-    overdue:  'Overdue',
-    paid:     'Paid',
-    pending:  'Pending Approval',
-    approved: 'Approved',
-    draft:    'Draft',
-    sent:     'Sent',
-  }
 
   readonly allInvoices: Invoice[] = [
     { id: 'FAC-2023-089', client: 'DataCloud Solutions',  initial: 'D', avatarColor: '#3B82F6', dateFacture: '12 Oct 2023', echeance: '12 Nov 2023', montantTTC: 1250.00, statut: 'overdue',  echeanceOverdue: true },
@@ -84,7 +76,6 @@ export class InvoicesComponent {
     Math.min(this.currentPage() * this.pageSize, this.filteredInvoices().length)
   )
 
-  // KPI values
   readonly totalAPayer   = 14280.50
   readonly recuesCount   = 8
   readonly enAttenteCount = 3
@@ -96,13 +87,13 @@ export class InvoicesComponent {
   ]
 
   readonly statusOptions: { value: InvoiceStatus | '', label: string }[] = [
-    { value: '', label: 'Tous les statuts' },
-    { value: 'paid',     label: 'Paid' },
-    { value: 'pending',  label: 'Pending' },
-    { value: 'approved', label: 'Approved' },
-    { value: 'overdue',  label: 'Overdue' },
-    { value: 'draft',    label: 'Draft' },
-    { value: 'sent',     label: 'Sent' },
+    { value: '',         label: 'INVOICES.STATUS_ALL' },
+    { value: 'paid',     label: 'INVOICES.STATUS_PAID' },
+    { value: 'pending',  label: 'INVOICES.STATUS_PENDING' },
+    { value: 'approved', label: 'INVOICES.STATUS_APPROVED' },
+    { value: 'overdue',  label: 'INVOICES.STATUS_OVERDUE' },
+    { value: 'draft',    label: 'INVOICES.STATUS_DRAFT' },
+    { value: 'sent',     label: 'INVOICES.STATUS_SENT' },
   ]
 
   goToPage(page: number): void {

@@ -1,11 +1,12 @@
 import { Component, signal } from '@angular/core'
 import { FormsModule } from '@angular/forms'
 import { RouterLink, Router } from '@angular/router'
+import { TranslateModule } from '@ngx-translate/core'
 
 @Component({
   selector: 'app-new-client',
   standalone: true,
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, TranslateModule],
   templateUrl: './new-client.component.html',
   styleUrl: './new-client.component.scss'
 })

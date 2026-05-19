@@ -2,6 +2,7 @@ import { Component, computed, signal } from '@angular/core'
 import { FormsModule } from '@angular/forms'
 import { RouterLink } from '@angular/router'
 import { CommonModule } from '@angular/common'
+import { TranslateModule } from '@ngx-translate/core'
 
 interface LineItem {
   id: number
@@ -15,7 +16,7 @@ interface LineItem {
 @Component({
   selector: 'app-new-invoice',
   standalone: true,
-  imports: [FormsModule, RouterLink, CommonModule],
+  imports: [FormsModule, RouterLink, CommonModule, TranslateModule],
   templateUrl: './new-invoice.component.html',
   styleUrl: './new-invoice.component.scss'
 })

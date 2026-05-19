@@ -3,8 +3,8 @@
   <!-- PAGE HEADER -->
   <div class="cl-header">
     <div class="cl-header__info">
-      <h1 class="cl-header__title">Clients</h1>
-      <p class="cl-header__sub">Gérez votre base de clients et suivez leurs paiements.</p>
+      <h1 class="cl-header__title">{{ 'CLIENTS.TITLE' | translate }}</h1>
+      <p class="cl-header__sub">{{ 'CLIENTS.SUBTITLE' | translate }}</p>
     </div>
     <div class="cl-header__actions">
       <div class="cl-search-wrapper">
@@ -12,14 +12,14 @@
         <input
           class="cl-search"
           type="text"
-          placeholder="Rechercher un client..."
+          [placeholder]="'CLIENTS.SEARCH_PLACEHOLDER' | translate"
           [ngModel]="searchQuery()"
           (ngModelChange)="onSearchChange($event)"
         />
       </div>
       <a routerLink="/client/create" class="cl-btn cl-btn--primary">
         <span class="material-symbols-outlined">person_add</span>
-        Nouveau Client
+        {{ 'CLIENTS.NEW_CLIENT' | translate }}
       </a>
     </div>
   </div>
@@ -27,21 +27,21 @@
   <!-- KPI STRIP -->
   <div class="cl-kpi-strip">
     <div class="cl-kpi cl-kpi--blue">
-      <p class="cl-kpi__label">Total Clients</p>
+      <p class="cl-kpi__label">{{ 'CLIENTS.KPI_TOTAL' | translate }}</p>
       <p class="cl-kpi__value">
         {{ totalClients.toLocaleString('fr-FR') }}
         <span class="cl-kpi__badge cl-kpi__badge--green">+4%</span>
       </p>
     </div>
     <div class="cl-kpi cl-kpi--amber">
-      <p class="cl-kpi__label">Nouveaux (30j)</p>
+      <p class="cl-kpi__label">{{ 'CLIENTS.KPI_NEW' | translate }}</p>
       <p class="cl-kpi__value">
         {{ nouveaux30j }}
         <span class="cl-kpi__trend material-symbols-outlined">trending_up</span>
       </p>
     </div>
     <div class="cl-kpi cl-kpi--red">
-      <p class="cl-kpi__label">Solde Global Dû</p>
+      <p class="cl-kpi__label">{{ 'CLIENTS.KPI_BALANCE' | translate }}</p>
       <p class="cl-kpi__value cl-kpi__value--danger">{{ formatAmount(soldeGlobalDu) }}</p>
     </div>
   </div>
@@ -52,18 +52,18 @@
       <table class="cl-table">
         <thead>
           <tr>
-            <th class="cl-th">Nom du Client</th>
-            <th class="cl-th">Contact</th>
-            <th class="cl-th">Email</th>
-            <th class="cl-th cl-th--center">Factures en Attente</th>
-            <th class="cl-th cl-th--right">Solde Dû</th>
-            <th class="cl-th cl-th--center">Actions</th>
+            <th class="cl-th">{{ 'CLIENTS.COL_NAME' | translate }}</th>
+            <th class="cl-th">{{ 'CLIENTS.COL_CONTACT' | translate }}</th>
+            <th class="cl-th">{{ 'CLIENTS.COL_EMAIL' | translate }}</th>
+            <th class="cl-th cl-th--center">{{ 'CLIENTS.COL_INVOICES' | translate }}</th>
+            <th class="cl-th cl-th--right">{{ 'CLIENTS.COL_BALANCE' | translate }}</th>
+            <th class="cl-th cl-th--center">{{ 'CLIENTS.COL_ACTIONS' | translate }}</th>
           </tr>
         </thead>
         <tbody>
           @if (pagedClients().length === 0) {
             <tr>
-              <td colspan="6" class="cl-td cl-empty">Aucun client trouvé.</td>
+              <td colspan="6" class="cl-td cl-empty">{{ 'CLIENTS.EMPTY' | translate }}</td>
             </tr>
           }
           @for (client of pagedClients(); track client.id) {
@@ -76,9 +76,13 @@
                 <a class="cl-email-link" href="mailto:{{ client.email }}">{{ client.email }}</a>
               </td>
               <td class="cl-td cl-td--center">
-                <span class="cl-badge cl-badge--{{ client.factureStatus }}">
-                  {{ factureLabel(client) }}
-                </span>
+                @if (client.factureStatus === 'a-jour') {
+                  <span class="cl-badge cl-badge--a-jour">{{ 'CLIENTS.STATUS_OK' | translate }}</span>
+                } @else if (client.factureStatus === 'retard') {
+                  <span class="cl-badge cl-badge--retard">{{ 'CLIENTS.STATUS_OVERDUE' | translate: { count: client.facturesCount } }}</span>
+                } @else {
+                  <span class="cl-badge cl-badge--en-attente">{{ 'CLIENTS.STATUS_PENDING' | translate: { count: client.facturesCount } }}</span>
+                }
               </td>
               <td class="cl-td cl-td--amount">
                 <span [class.cl-amount--danger]="client.soldeDu > 0">
@@ -99,7 +103,7 @@
     <!-- PAGINATION -->
     <div class="cl-pagination">
       <span class="cl-pagination__info">
-        Affichage de {{ pageStart() }} à {{ pageEnd() }} sur {{ filteredClients().length.toLocaleString('fr-FR') }} clients
+        {{ 'CLIENTS.PAGE_INFO' | translate: { start: pageStart(), end: pageEnd(), total: filteredClients().length } }}
       </span>
       <div class="cl-pagination__controls">
         <button

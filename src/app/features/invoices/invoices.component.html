@@ -3,17 +3,17 @@
   <!-- PAGE HEADER -->
   <div class="inv-header">
     <div class="inv-header__info">
-      <h1 class="inv-header__title">Factures</h1>
-      <p class="inv-header__sub">Gérez vos engagements financiers et le cycle de paiement.</p>
+      <h1 class="inv-header__title">{{ 'INVOICES.TITLE' | translate }}</h1>
+      <p class="inv-header__sub">{{ 'INVOICES.SUBTITLE' | translate }}</p>
     </div>
     <div class="inv-header__actions">
       <a routerLink="/invoice/create" class="inv-btn inv-btn--primary">
         <span class="material-symbols-outlined">add</span>
-        Create New Invoice
+        {{ 'INVOICES.NEW_INVOICE' | translate }}
       </a>
       <button type="button" class="inv-btn inv-btn--outline">
         <span class="material-symbols-outlined">upload</span>
-        Upload Invoice
+        {{ 'INVOICES.UPLOAD' | translate }}
       </button>
     </div>
   </div>
@@ -23,26 +23,26 @@
 
     <!-- Total à payer -->
     <div class="inv-kpi inv-kpi--blue">
-      <p class="inv-kpi__label">Total à payer</p>
+      <p class="inv-kpi__label">{{ 'INVOICES.KPI_TOTAL' | translate }}</p>
       <p class="inv-kpi__value">{{ formatAmount(totalAPayer) }}</p>
       <p class="inv-kpi__trend inv-kpi__trend--up">
         <span class="material-symbols-outlined">trending_up</span>
-        +4.2% par rapport au mois dernier
+        {{ 'INVOICES.KPI_TREND' | translate }}
       </p>
     </div>
 
     <!-- Reçues récemment -->
     <div class="inv-kpi inv-kpi--amber">
-      <p class="inv-kpi__label">Reçues récemment (7j)</p>
-      <p class="inv-kpi__value inv-kpi__value--count">{{ recuesCount }} <span>Factures</span></p>
-      <p class="inv-kpi__sub">En attente de validation : {{ enAttenteCount }}</p>
+      <p class="inv-kpi__label">{{ 'INVOICES.KPI_RECENT' | translate }}</p>
+      <p class="inv-kpi__value inv-kpi__value--count">{{ recuesCount }} <span>{{ 'INVOICES.KPI_INVOICES' | translate }}</span></p>
+      <p class="inv-kpi__sub">{{ 'INVOICES.KPI_PENDING_VALIDATION' | translate }} {{ enAttenteCount }}</p>
     </div>
 
     <!-- Total en retard -->
     <div class="inv-kpi inv-kpi--red">
-      <p class="inv-kpi__label">Total en retard</p>
+      <p class="inv-kpi__label">{{ 'INVOICES.KPI_OVERDUE' | translate }}</p>
       <p class="inv-kpi__value inv-kpi__value--danger">{{ formatAmount(totalEnRetard) }}</p>
-      <p class="inv-kpi__action-required">ACTION REQUISE IMMÉDIATEMENT</p>
+      <p class="inv-kpi__action-required">{{ 'INVOICES.KPI_ACTION' | translate }}</p>
     </div>
 
   </div>
@@ -50,7 +50,7 @@
   <!-- INVOICE TABLE CARD -->
   <div class="inv-card">
     <div class="inv-table-header">
-      <h2 class="inv-table-title">Liste des factures</h2>
+      <h2 class="inv-table-title">{{ 'INVOICES.TABLE_TITLE' | translate }}</h2>
       <div class="inv-table-controls">
         <!-- Search -->
         <div class="inv-search-wrapper">
@@ -58,7 +58,7 @@
           <input
             class="inv-search"
             type="text"
-            placeholder="Rechercher..."
+            [placeholder]="'INVOICES.SEARCH_PLACEHOLDER' | translate"
             [ngModel]="searchQuery()"
             (ngModelChange)="onSearchChange($event)"
           />
@@ -70,17 +70,17 @@
           (ngModelChange)="onStatusChange($event)"
         >
           @for (opt of statusOptions; track opt.value) {
-            <option [value]="opt.value">{{ opt.label }}</option>
+            <option [value]="opt.value">{{ opt.label | translate }}</option>
           }
         </select>
         <!-- Actions -->
         <button type="button" class="inv-btn-ghost">
           <span class="material-symbols-outlined">filter_list</span>
-          Filtrer
+          {{ 'INVOICES.FILTER' | translate }}
         </button>
         <button type="button" class="inv-btn-ghost">
           <span class="material-symbols-outlined">download</span>
-          Exporter
+          {{ 'INVOICES.EXPORT' | translate }}
         </button>
       </div>
     </div>
@@ -89,18 +89,18 @@
       <table class="inv-table">
         <thead>
           <tr>
-            <th class="inv-th">Client</th>
-            <th class="inv-th">Date Facture</th>
-            <th class="inv-th">Échéance</th>
-            <th class="inv-th inv-th--right">Montant (TTC)</th>
-            <th class="inv-th">Statut</th>
-            <th class="inv-th inv-th--center">Actions</th>
+            <th class="inv-th">{{ 'INVOICES.COL_CLIENT' | translate }}</th>
+            <th class="inv-th">{{ 'INVOICES.COL_DATE' | translate }}</th>
+            <th class="inv-th">{{ 'INVOICES.COL_DUE' | translate }}</th>
+            <th class="inv-th inv-th--right">{{ 'INVOICES.COL_AMOUNT' | translate }}</th>
+            <th class="inv-th">{{ 'INVOICES.COL_STATUS' | translate }}</th>
+            <th class="inv-th inv-th--center">{{ 'INVOICES.COL_ACTIONS' | translate }}</th>
           </tr>
         </thead>
         <tbody>
           @if (pagedInvoices().length === 0) {
             <tr>
-              <td colspan="6" class="inv-td inv-empty">Aucune facture trouvée.</td>
+              <td colspan="6" class="inv-td inv-empty">{{ 'INVOICES.EMPTY' | translate }}</td>
             </tr>
           }
           @for (inv of pagedInvoices(); track inv.id) {
@@ -119,7 +119,7 @@
               <td class="inv-td inv-td--amount">{{ formatAmount(inv.montantTTC) }}</td>
               <td class="inv-td">
                 <span class="inv-badge inv-badge--{{ inv.statut }}">
-                  {{ statusLabels[inv.statut] }}
+                  {{ 'INVOICES.STATUS_' + inv.statut.toUpperCase() | translate }}
                 </span>
               </td>
               <td class="inv-td inv-td--center">
@@ -136,8 +136,7 @@
     <!-- PAGINATION -->
     <div class="inv-pagination">
       <span class="inv-pagination__info">
-        Affichage de {{ (currentPage() - 1) * 5 + 1 }}-{{ pageEnd() }}
-        sur {{ filteredInvoices().length }} factures
+        {{ 'INVOICES.PAGE_INFO' | translate: { start: (currentPage()-1)*pageSize+1, end: pageEnd(), total: filteredInvoices().length } }}
       </span>
       <div class="inv-pagination__controls">
         <button
@@ -175,7 +174,7 @@
     <div class="inv-card inv-activity">
       <div class="inv-activity__header">
         <span class="material-symbols-outlined inv-activity__icon">history</span>
-        <h2 class="inv-activity__title">Activités récentes</h2>
+        <h2 class="inv-activity__title">{{ 'INVOICES.ACTIVITY_TITLE' | translate }}</h2>
       </div>
       <ul class="inv-activity__list">
         @for (act of activities; track act.text) {

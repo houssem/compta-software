@@ -4,85 +4,73 @@
   <aside class="layout-sidebar">
     <nav class="layout-nav">
 
-      <!-- SALES -->
-      <div class="layout-nav__group-label">Sales</div>
-      <a routerLink="/dashboard-vente"
-         routerLinkActive="layout-nav__link--active"
-         class="layout-nav__link">
+      <div class="layout-nav__group-label">{{ 'NAV.SALES' | translate }}</div>
+      <a routerLink="/dashboard-vente" routerLinkActive="layout-nav__link--active" class="layout-nav__link">
         <span class="material-symbols-outlined">dashboard</span>
-        <span>Dashboard</span>
+        <span>{{ 'NAV.DASHBOARD' | translate }}</span>
       </a>
       <a routerLink="/invoices" routerLinkActive="layout-nav__link--active" class="layout-nav__link">
         <span class="material-symbols-outlined">description</span>
-        <span>Invoices</span>
-      </a>
-      <a routerLink="/quotes" routerLinkActive="layout-nav__link--active" class="layout-nav__link">
-        <span class="material-symbols-outlined">request_quote</span>
-        <span>Quotes</span>
+        <span>{{ 'NAV.INVOICES' | translate }}</span>
       </a>
       <a routerLink="/customers" routerLinkActive="layout-nav__link--active" class="layout-nav__link">
         <span class="material-symbols-outlined">group</span>
-        <span>Customers</span>
+        <span>{{ 'NAV.CUSTOMERS' | translate }}</span>
       </a>
 
-      <!-- PURCHASES -->
-      <div class="layout-nav__group-label">Purchases</div>
+      <div class="layout-nav__group-label">{{ 'NAV.PURCHASES' | translate }}</div>
       <a routerLink="/dashboard-achat" routerLinkActive="layout-nav__link--active" class="layout-nav__link">
         <span class="material-symbols-outlined">dashboard</span>
-        <span>Dashboard</span>
+        <span>{{ 'NAV.DASHBOARD' | translate }}</span>
       </a>
       <a routerLink="/bills" routerLinkActive="layout-nav__link--active" class="layout-nav__link">
         <span class="material-symbols-outlined">receipt_long</span>
-        <span>Bills</span>
+        <span>{{ 'NAV.BILLS' | translate }}</span>
       </a>
       <a routerLink="/suppliers" routerLinkActive="layout-nav__link--active" class="layout-nav__link">
         <span class="material-symbols-outlined">precision_manufacturing</span>
-        <span>Suppliers</span>
+        <span>{{ 'NAV.SUPPLIERS' | translate }}</span>
       </a>
 
-      <!-- GENERAL -->
-      <div class="layout-nav__group-label">General</div>
+      <div class="layout-nav__group-label">{{ 'NAV.GENERAL' | translate }}</div>
       <a routerLink="/reports" routerLinkActive="layout-nav__link--active" class="layout-nav__link">
         <span class="material-symbols-outlined">assessment</span>
-        <span>Reports</span>
+        <span>{{ 'NAV.REPORTS' | translate }}</span>
       </a>
       <a routerLink="/settings" routerLinkActive="layout-nav__link--active" class="layout-nav__link">
         <span class="material-symbols-outlined">settings</span>
-        <span>Settings</span>
+        <span>{{ 'NAV.SETTINGS' | translate }}</span>
       </a>
 
     </nav>
 
     <div class="layout-sidebar__footer">
-      <p class="layout-sidebar__footer-brand">Accounting Suite</p>
-      <p class="layout-sidebar__footer-copy">© 2026 Facturation</p>
+      <p class="layout-sidebar__footer-brand">{{ 'NAV.ACCOUNTING_SUITE' | translate }}</p>
+      <p class="layout-sidebar__footer-copy">{{ 'NAV.FOOTER_COPY' | translate }}</p>
     </div>
   </aside>
 
-  <!-- MAIN CONTENT -->
   <main class="layout-main">
     <router-outlet />
   </main>
 
 </div>
 
-<!-- MOBILE BOTTOM NAV (hidden on md+) -->
 <nav class="layout-bottom-nav">
-  <a routerLink="/dashboard-vente" routerLinkActive="layout-bottom-nav__item--active"
-     class="layout-bottom-nav__item">
+  <a routerLink="/dashboard-vente" routerLinkActive="layout-bottom-nav__item--active" class="layout-bottom-nav__item">
     <span class="material-symbols-outlined">dashboard</span>
-    <span>Dash</span>
+    <span>{{ 'NAV.DASHBOARD' | translate }}</span>
   </a>
   <a routerLink="/invoices" routerLinkActive="layout-bottom-nav__item--active" class="layout-bottom-nav__item">
     <span class="material-symbols-outlined">description</span>
-    <span>Invoices</span>
+    <span>{{ 'NAV.INVOICES' | translate }}</span>
   </a>
   <a routerLink="/customers" routerLinkActive="layout-bottom-nav__item--active" class="layout-bottom-nav__item">
     <span class="material-symbols-outlined">group</span>
-    <span>Clients</span>
+    <span>{{ 'NAV.CUSTOMERS' | translate }}</span>
   </a>
   <a routerLink="/settings" routerLinkActive="layout-bottom-nav__item--active" class="layout-bottom-nav__item">
     <span class="material-symbols-outlined">settings</span>
-    <span>More</span>
+    <span>{{ 'NAV.MORE' | translate }}</span>
   </a>
 </nav>

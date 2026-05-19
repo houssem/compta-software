@@ -1,17 +1,25 @@
 <header class="app-header">
   <div class="app-header__left">
-    <a routerLink="/" class="app-header__brand">Module de facturation</a>
+    <a routerLink="/" class="app-header__brand">{{ 'HEADER.BRAND' | translate }}</a>
   </div>
 
   <div class="app-header__right">
+    <button class="app-header__lang-btn" type="button" (click)="toggleLang()">
+      @if (langService.currentLang() === 'en') {
+        🇬🇧 EN
+      } @else {
+        🇫🇷 FR
+      }
+    </button>
+
     @if (isLoggedIn()) {
-      <button class="app-header__logout" (click)="logout()">Déconnexion</button>
+      <button class="app-header__logout" (click)="logout()">{{ 'HEADER.LOGOUT' | translate }}</button>
       <span class="material-symbols-outlined app-header__icon">notifications</span>
       <span class="material-symbols-outlined app-header__icon">settings</span>
       <div class="app-header__avatar">{{ userInitial() }}</div>
     } @else {
-      <a routerLink="/login" routerLinkActive="app-header__link--active" class="app-header__link">Connexion</a>
-      <a routerLink="/login" class="app-header__btn-register">S'inscrire</a>
+      <a routerLink="/login" routerLinkActive="app-header__link--active" class="app-header__link">{{ 'HEADER.LOGIN' | translate }}</a>
+      <a routerLink="/login" class="app-header__btn-register">{{ 'HEADER.REGISTER' | translate }}</a>
     }
   </div>
 </header>

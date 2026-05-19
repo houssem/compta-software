@@ -6,7 +6,7 @@
       <a routerLink="/invoices" class="ni-back-link">
         <span class="material-symbols-outlined">arrow_back</span>
       </a>
-      <h1 class="ni-header__title">Create New Invoice</h1>
+      <h1 class="ni-header__title">{{ 'NEW_INVOICE.TITLE' | translate }}</h1>
     </div>
   </header>
 
@@ -18,17 +18,17 @@
 
       <!-- GENERAL INFORMATION -->
       <section class="ni-card">
-        <h2 class="ni-card__title">General Information</h2>
+        <h2 class="ni-card__title">{{ 'NEW_INVOICE.SECTION_GENERAL' | translate }}</h2>
         <div class="ni-grid ni-grid--4">
 
           <!-- Client Name (spans 2) -->
           <div class="ni-field ni-field--span2">
-            <label class="ni-label">Client Name</label>
+            <label class="ni-label">{{ 'NEW_INVOICE.CLIENT_NAME' | translate }}</label>
             <div class="ni-input-wrapper">
               <input
                 class="ni-input"
                 type="text"
-                placeholder="Search or select a client..."
+                [placeholder]="'NEW_INVOICE.CLIENT_PLACEHOLDER' | translate"
                 [ngModel]="clientName()"
                 (ngModelChange)="clientName.set($event)"
               />
@@ -38,7 +38,7 @@
 
           <!-- Invoice Number (spans 2) -->
           <div class="ni-field ni-field--span2">
-            <label class="ni-label">Invoice Number</label>
+            <label class="ni-label">{{ 'NEW_INVOICE.INVOICE_NUMBER' | translate }}</label>
             <input
               class="ni-input ni-input--readonly"
               type="text"
@@ -49,7 +49,7 @@
 
           <!-- Issue Date -->
           <div class="ni-field">
-            <label class="ni-label">Issue Date</label>
+            <label class="ni-label">{{ 'NEW_INVOICE.ISSUE_DATE' | translate }}</label>
             <input
               class="ni-input"
               type="date"
@@ -60,7 +60,7 @@
 
           <!-- Due Date -->
           <div class="ni-field">
-            <label class="ni-label">Due Date</label>
+            <label class="ni-label">{{ 'NEW_INVOICE.DUE_DATE' | translate }}</label>
             <input
               class="ni-input"
               type="date"
@@ -71,7 +71,7 @@
 
           <!-- Currency -->
           <div class="ni-field">
-            <label class="ni-label">Currency</label>
+            <label class="ni-label">{{ 'NEW_INVOICE.CURRENCY' | translate }}</label>
             <select
               class="ni-select"
               [ngModel]="currency()"
@@ -85,7 +85,7 @@
 
           <!-- Language -->
           <div class="ni-field">
-            <label class="ni-label">Language</label>
+            <label class="ni-label">{{ 'NEW_INVOICE.LANGUAGE' | translate }}</label>
             <select
               class="ni-select"
               [ngModel]="language()"
@@ -103,10 +103,10 @@
       <!-- LINE ITEMS -->
       <section class="ni-card">
         <div class="ni-line-items-header">
-          <h2 class="ni-card__title">Line Items</h2>
+          <h2 class="ni-card__title">{{ 'NEW_INVOICE.LINE_ITEMS' | translate }}</h2>
           <button type="button" class="ni-btn-add" (click)="addItem()">
             <span class="material-symbols-outlined">add_circle</span>
-            Add item
+            {{ 'NEW_INVOICE.ADD_ITEM' | translate }}
           </button>
         </div>
 
@@ -115,12 +115,12 @@
             <thead>
               <tr>
                 <th class="ni-th ni-th--drag"></th>
-                <th class="ni-th">Description</th>
-                <th class="ni-th ni-th--num">QTY</th>
-                <th class="ni-th ni-th--num">Price HT</th>
-                <th class="ni-th ni-th--num">Disc %</th>
-                <th class="ni-th ni-th--num">VAT</th>
-                <th class="ni-th ni-th--num">Total HT</th>
+                <th class="ni-th">{{ 'NEW_INVOICE.COL_DESCRIPTION' | translate }}</th>
+                <th class="ni-th ni-th--num">{{ 'NEW_INVOICE.COL_QTY' | translate }}</th>
+                <th class="ni-th ni-th--num">{{ 'NEW_INVOICE.COL_PRICE' | translate }}</th>
+                <th class="ni-th ni-th--num">{{ 'NEW_INVOICE.COL_DISC' | translate }}</th>
+                <th class="ni-th ni-th--num">{{ 'NEW_INVOICE.COL_VAT' | translate }}</th>
+                <th class="ni-th ni-th--num">{{ 'NEW_INVOICE.COL_TOTAL' | translate }}</th>
                 <th class="ni-th ni-th--action"></th>
               </tr>
             </thead>
@@ -134,7 +134,7 @@
                     <input
                       class="ni-cell-input"
                       type="text"
-                      placeholder="Item description"
+                      [placeholder]="'NEW_INVOICE.ITEM_PLACEHOLDER' | translate"
                       [ngModel]="item.description"
                       (ngModelChange)="updateItem(item.id, 'description', $event)"
                     />
@@ -202,17 +202,17 @@
       <!-- NOTES & TERMS -->
       <section class="ni-card ni-card--row">
         <div class="ni-field ni-field--grow">
-          <label class="ni-label">Internal Notes</label>
+          <label class="ni-label">{{ 'NEW_INVOICE.INTERNAL_NOTES' | translate }}</label>
           <textarea
             class="ni-textarea"
-            placeholder="Add a private note for your team..."
+            [placeholder]="'NEW_INVOICE.NOTES_PLACEHOLDER' | translate"
             rows="4"
             [ngModel]="internalNotes()"
             (ngModelChange)="internalNotes.set($event)"
           ></textarea>
         </div>
         <div class="ni-field ni-field--grow">
-          <label class="ni-label">Terms &amp; Conditions</label>
+          <label class="ni-label">{{ 'NEW_INVOICE.TERMS' | translate }}</label>
           <textarea
             class="ni-textarea"
             rows="4"
@@ -227,16 +227,16 @@
     <!-- SUMMARY SIDEBAR (right column) -->
     <aside class="ni-summary">
 
-      <h2 class="ni-summary__title">Summary</h2>
+      <h2 class="ni-summary__title">{{ 'NEW_INVOICE.SUMMARY' | translate }}</h2>
 
       <div class="ni-summary__totals">
         <div class="ni-summary__row">
-          <span class="ni-summary__label">Total HT</span>
+          <span class="ni-summary__label">{{ 'NEW_INVOICE.TOTAL_HT' | translate }}</span>
           <span class="ni-summary__value">{{ formatAmount(totalHT()) }}</span>
         </div>
 
         <div class="ni-summary__vat-block">
-          <p class="ni-summary__vat-label">VAT Breakdown</p>
+          <p class="ni-summary__vat-label">{{ 'NEW_INVOICE.VAT_BREAKDOWN' | translate }}</p>
           @for (vat of vatBreakdown(); track vat.rate) {
             <div class="ni-summary__row ni-summary__row--sub">
               <span class="ni-summary__label">VAT {{ vat.rate }}%</span>
@@ -256,31 +256,30 @@
       <div class="ni-summary__actions">
         <button type="button" class="ni-btn ni-btn--primary" (click)="sendByEmail()">
           <span class="material-symbols-outlined">send</span>
-          Send by Email
+          {{ 'NEW_INVOICE.SEND_EMAIL' | translate }}
         </button>
         <button type="button" class="ni-btn ni-btn--outline" (click)="save()">
           <span class="material-symbols-outlined">save</span>
-          Sauvegarder
+          {{ 'NEW_INVOICE.SAVE' | translate }}
         </button>
         <button type="button" class="ni-btn ni-btn--outline" (click)="preview()">
           <span class="material-symbols-outlined">visibility</span>
-          Preview
+          {{ 'NEW_INVOICE.PREVIEW' | translate }}
         </button>
       </div>
 
-      <p class="ni-summary__saved">Last saved: {{ lastSaved() }}</p>
+      <p class="ni-summary__saved">{{ 'NEW_INVOICE.LAST_SAVED' | translate }} {{ lastSaved() }}</p>
 
       <!-- Smart Tip -->
       <div class="ni-tip">
         <div class="ni-tip__header">
           <span class="material-symbols-outlined">lightbulb</span>
-          <span class="ni-tip__title">Smart Tip</span>
+          <span class="ni-tip__title">{{ 'NEW_INVOICE.TIP_TITLE' | translate }}</span>
         </div>
         <p class="ni-tip__body">
-          Based on your history with this client, you usually offer a 5% discount for annual subscriptions.
-          Would you like to apply it now?
+          {{ 'NEW_INVOICE.TIP_BODY' | translate }}
         </p>
-        <button type="button" class="ni-tip__action">Apply discount</button>
+        <button type="button" class="ni-tip__action">{{ 'NEW_INVOICE.TIP_APPLY' | translate }}</button>
       </div>
 
     </aside>
