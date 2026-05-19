@@ -6,14 +6,14 @@
         <h1>Facturation</h1>
       </div>
       <div class="login-title">
-        <h2>Se connecter à votre compte</h2>
-        <p>Entrez vos identifiants pour accéder à votre espace.</p>
+        <h2>{{ 'LOGIN.TITLE' | translate }}</h2>
+        <p>{{ 'LOGIN.SUBTITLE' | translate }}</p>
       </div>
     </header>
 
     <form class="login-form" (ngSubmit)="onSubmit()" #loginForm="ngForm">
       <div class="form-group">
-        <label for="email">E-mail</label>
+        <label for="email">{{ 'LOGIN.EMAIL' | translate }}</label>
         <div class="input-wrapper">
           <span class="material-symbols-outlined icon">mail</span>
           <input id="email" type="email" name="email" [(ngModel)]="email" placeholder="nom@entreprise.com" required>
@@ -22,8 +22,8 @@
 
       <div class="form-group">
         <div class="label-row">
-          <label for="password">Mot de passe</label>
-          <a href="#" class="forgot-link">Mot de passe oublié ?</a>
+          <label for="password">{{ 'LOGIN.PASSWORD' | translate }}</label>
+          <a href="#" class="forgot-link">{{ 'LOGIN.FORGOT' | translate }}</a>
         </div>
         <div class="input-wrapper">
           <span class="material-symbols-outlined icon">lock</span>
@@ -33,26 +33,24 @@
           </button>
         </div>
       </div>
-      
-      <p class="credentials-hint">
-        Compte démo&nbsp;: <strong>admin&#64;facturation.dev</strong> / <strong>admin123</strong>
-      </p>
+
+      <p class="credentials-hint" [innerHTML]="'LOGIN.DEMO_HINT' | translate"></p>
 
       @if (errorMessage) {
         <div class="error-message">
-           <span class="material-symbols-outlined icon-error">error</span>
-           <span>{{ errorMessage }}</span>
+          <span class="material-symbols-outlined icon-error">error</span>
+          <span>{{ errorMessage }}</span>
         </div>
       }
 
       <button type="submit" class="btn-primary full-width" [disabled]="!email || !password || loading">
-        <span>{{ loading ? 'Connexion en cours...' : 'Se connecter' }}</span>
+        <span>{{ (loading ? 'LOGIN.LOADING' : 'LOGIN.SUBMIT') | translate }}</span>
       </button>
     </form>
 
     <div class="divider">
       <div class="line"></div>
-      <span>Ou continuer avec</span>
+      <span>{{ 'LOGIN.OR' | translate }}</span>
       <div class="line"></div>
     </div>
 
@@ -68,7 +66,7 @@
     </div>
 
     <div class="register-link">
-      <p>Pas encore de compte ? <a href="#">S'inscrire</a></p>
+      <p>{{ 'LOGIN.NO_ACCOUNT' | translate }} <a href="#">{{ 'LOGIN.REGISTER' | translate }}</a></p>
     </div>
   </div>
 </main>
@@ -77,7 +75,7 @@
   <div class="footer-inner">
     <div class="footer-brand">
       <h3>Facturation</h3>
-      <p>La suite comptable de référence pour les entreprises à forte croissance. Précision, rapidité et sécurité bancaire.</p>
+      <p>{{ 'LOGIN.FOOTER_DESC' | translate }}</p>
       <div class="footer-icons">
         <span class="material-symbols-outlined">menu_book</span>
         <span class="material-symbols-outlined">language</span>
@@ -85,16 +83,16 @@
       </div>
     </div>
     <div class="footer-col">
-      <h5>Produit</h5>
+      <h5>{{ 'LOGIN.FOOTER_PRODUCT' | translate }}</h5>
       <ul>
-        <li><a href="#">Fonctionnalités</a></li>
-        <li><a href="#">Tarifs</a></li>
-        <li><a href="#">Sécurité</a></li>
-        <li><a href="#">API</a></li>
+        <li><a href="#">{{ 'LOGIN.FOOTER_FEATURES' | translate }}</a></li>
+        <li><a href="#">{{ 'LOGIN.FOOTER_PRICING' | translate }}</a></li>
+        <li><a href="#">{{ 'LOGIN.FOOTER_SECURITY' | translate }}</a></li>
+        <li><a href="#">{{ 'LOGIN.FOOTER_API' | translate }}</a></li>
       </ul>
     </div>
     <div class="footer-col">
-      <h5>Contact</h5>
+      <h5>{{ 'LOGIN.FOOTER_CONTACT' | translate }}</h5>
       <ul>
         <li>support&#64;facturation.dev</li>
         <li>+33 1 23 45 67 89</li>
@@ -103,11 +101,11 @@
     </div>
   </div>
   <div class="footer-bottom">
-    <p>© 2026 Facturation. Tous droits réservés.</p>
+    <p>{{ 'LOGIN.FOOTER_RIGHTS' | translate }}</p>
     <div class="footer-bottom-links">
-      <a href="#">Conditions</a>
-      <a href="#">Confidentialité</a>
-      <a href="#">Cookies</a>
+      <a href="#">{{ 'LOGIN.FOOTER_TERMS' | translate }}</a>
+      <a href="#">{{ 'LOGIN.FOOTER_PRIVACY' | translate }}</a>
+      <a href="#">{{ 'LOGIN.FOOTER_COOKIES' | translate }}</a>
     </div>
   </div>
 </footer>

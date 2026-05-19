@@ -1,5 +1,6 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing'
 import { RouterTestingModule } from '@angular/router/testing'
+import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { of, throwError } from 'rxjs'
 import { LoginComponent } from './login.component'
 import { AuthService } from '../../core/auth/auth.service'
@@ -12,8 +13,8 @@ describe('LoginComponent', () => {
   beforeEach(async () => {
     authServiceSpy = jasmine.createSpyObj('AuthService', ['login'])
     await TestBed.configureTestingModule({
-      imports: [LoginComponent, RouterTestingModule],
-      providers: [{ provide: AuthService, useValue: authServiceSpy }]
+      imports: [LoginComponent, RouterTestingModule, TranslateModule.forRoot()],
+      providers: [{ provide: AuthService, useValue: authServiceSpy }, TranslateService]
     }).compileComponents()
     fixture = TestBed.createComponent(LoginComponent)
     component = fixture.componentInstance
