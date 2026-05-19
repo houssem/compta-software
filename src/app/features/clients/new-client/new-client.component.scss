@@ -321,3 +321,18 @@
 
   @media (max-width: 480px) { display: none; }
 }
+
+.nc-error-msg {
+  color: #ef4444;
+  font-size: 0.875rem;
+  align-self: center;
+}
+
+.nc-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}

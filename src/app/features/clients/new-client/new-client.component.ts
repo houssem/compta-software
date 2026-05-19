@@ -2,6 +2,8 @@ import { Component, signal } from '@angular/core'
 import { FormsModule } from '@angular/forms'
 import { RouterLink, Router } from '@angular/router'
 import { TranslateModule } from '@ngx-translate/core'
+import { ClientService } from '../client.service'
+import { CreateClientDto } from '../../../shared/models/client.model'
 
 @Component({
   selector: 'app-new-client',
@@ -12,7 +14,6 @@ import { TranslateModule } from '@ngx-translate/core'
 })
 export class NewClientComponent {
   companyName    = signal('')
-  reference      = signal('CUST-' + new Date().getFullYear() + '-' + String(Math.floor(Math.random() * 9000) + 1000))
   website        = signal('')
 
   fullName       = signal('')
@@ -28,6 +29,9 @@ export class NewClientComponent {
   currency       = signal('EUR')
   paymentTerms   = signal('Net 30')
 
+  loading        = signal(false)
+  errorMsg       = signal('')
+
   readonly countries = [
     'France', 'United Kingdom', 'Germany', 'Spain', 'Italy',
     'Belgium', 'Switzerland', 'Netherlands', 'United States', 'Other'
@@ -42,11 +46,43 @@ export class NewClientComponent {
 
   readonly paymentTermsOptions = ['Net 15', 'Net 30', 'Net 45', 'Net 60', 'Immédiat']
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private clientService: ClientService
+  ) {}
 
   save(): void {
-    // TODO: wire to client service
-    this.router.navigate(['/customers'])
+    this.loading.set(true)
+    this.errorMsg.set('')
+
+    const dto: CreateClientDto = {
+      companyName: this.companyName(),
+      website: this.website(),
+      contact: {
+        fullName: this.fullName(),
+        email: this.email(),
+        phone: this.phone()
+      },
+      billingAddress: {
+        street: this.street(),
+        city: this.city(),
+        postalCode: this.postalCode(),
+        country: this.country()
+      },
+      financial: {
+        taxId: this.taxId(),
+        currency: this.currency() as 'EUR' | 'GBP' | 'USD' | 'CHF',
+        paymentTerms: this.paymentTerms() as 'Net 15' | 'Net 30' | 'Net 45' | 'Net 60' | 'Immédiat'
+      }
+    }
+
+    this.clientService.create(dto).subscribe({
+      next: () => { this.loading.set(false); this.router.navigate(['/customers']) },
+      error: (e) => {
+        this.errorMsg.set(e?.error?.message ?? 'Une erreur est survenue. Veuillez réessayer.')
+        this.loading.set(false)
+      }
+    })
   }
 
   cancel(): void {

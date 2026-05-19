@@ -185,7 +185,8 @@
     "CURRENCY": "Currency",
     "PAYMENT_TERMS": "Payment Terms",
     "BANNER_TITLE": "Account Setup Finalization",
-    "BANNER_BODY": "Upon saving, this customer will be immediately available for invoice generation and quote drafting. Precision Ledger will automatically track all transactions against the unique reference number"
+    "BANNER_BODY": "Upon saving, this customer will be immediately available for invoice generation and quote drafting. Precision Ledger will automatically track all transactions against the unique reference number",
+    "SAVING": "Saving..."
   },
   "NEW_INVOICE": {
     "TITLE": "Create New Invoice",

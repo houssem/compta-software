@@ -185,7 +185,8 @@
     "CURRENCY": "Devise",
     "PAYMENT_TERMS": "Conditions de paiement",
     "BANNER_TITLE": "Finalisation du compte",
-    "BANNER_BODY": "Une fois enregistré, ce client sera immédiatement disponible pour la génération de factures. Le système suivra automatiquement toutes les transactions sous la référence unique"
+    "BANNER_BODY": "Une fois enregistré, ce client sera immédiatement disponible pour la génération de factures. Le système suivra automatiquement toutes les transactions sous la référence unique",
+    "SAVING": "Enregistrement..."
   },
   "NEW_INVOICE": {
     "TITLE": "Créer une facture",

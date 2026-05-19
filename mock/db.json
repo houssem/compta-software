@@ -1,0 +1,50 @@
+{
+  "clients": [
+    {
+      "id": "clnt_001",
+      "reference": "CUST-2026-0001",
+      "companyName": "Acme Corp",
+      "website": "https://www.acme.com",
+      "contact": {
+        "fullName": "John Doe",
+        "email": "john@acme.com",
+        "phone": "+33 6 00 00 00 00"
+      },
+      "billingAddress": {
+        "street": "123 rue de la Paix",
+        "city": "Paris",
+        "postalCode": "75001",
+        "country": "France"
+      },
+      "financial": {
+        "taxId": "FR 12 345 678 901",
+        "currency": "EUR",
+        "paymentTerms": "Net 30"
+      },
+      "createdAt": "2026-01-15T10:00:00Z"
+    },
+    {
+      "companyName": "ALJ",
+      "website": "https://alj.com",
+      "contact": {
+        "fullName": "Thameen Jachan",
+        "email": "thameen.chadd@gmail.com",
+        "phone": "+145777777777"
+      },
+      "billingAddress": {
+        "street": "Prince Sultan",
+        "city": "Jeddah",
+        "postalCode": "74544",
+        "country": "France"
+      },
+      "financial": {
+        "taxId": "74544444444444",
+        "currency": "EUR",
+        "paymentTerms": "Net 30"
+      },
+      "id": "clnt_1779233956038",
+      "reference": "CUST-2026-8171",
+      "createdAt": "2026-05-19T23:39:16.038Z"
+    }
+  ]
+}
