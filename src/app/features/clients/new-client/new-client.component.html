@@ -3,20 +3,20 @@
   <!-- BREADCRUMB + HEADER -->
   <div class="nc-topbar">
     <nav class="nc-breadcrumb">
-      <a routerLink="/customers" class="nc-breadcrumb__link">Customers</a>
+      <a routerLink="/customers" class="nc-breadcrumb__link">{{ 'NEW_CLIENT.BREADCRUMB' | translate }}</a>
       <span class="material-symbols-outlined nc-breadcrumb__sep">chevron_right</span>
-      <span class="nc-breadcrumb__current">New Customer</span>
+      <span class="nc-breadcrumb__current">{{ 'NEW_CLIENT.BREADCRUMB_CURRENT' | translate }}</span>
     </nav>
     <div class="nc-topbar__actions">
-      <button type="button" class="nc-btn nc-btn--ghost" (click)="cancel()">Cancel</button>
+      <button type="button" class="nc-btn nc-btn--ghost" (click)="cancel()">{{ 'NEW_CLIENT.CANCEL' | translate }}</button>
       <button type="button" class="nc-btn nc-btn--primary" (click)="save()">
         <span class="material-symbols-outlined">save</span>
-        Save Customer
+        {{ 'NEW_CLIENT.SAVE' | translate }}
       </button>
     </div>
   </div>
 
-  <h1 class="nc-title">New Customer Profile</h1>
+  <h1 class="nc-title">{{ 'NEW_CLIENT.TITLE' | translate }}</h1>
 
   <!-- TWO-COLUMN BODY -->
   <div class="nc-body">
@@ -28,20 +28,20 @@
       <section class="nc-card">
         <div class="nc-card__header">
           <span class="material-symbols-outlined nc-card__icon">business</span>
-          <h2 class="nc-card__title">General Information</h2>
+          <h2 class="nc-card__title">{{ 'NEW_CLIENT.SECTION_GENERAL' | translate }}</h2>
         </div>
         <div class="nc-grid nc-grid--2">
           <div class="nc-field">
-            <label class="nc-label">Company Name</label>
-            <input class="nc-input" type="text" placeholder="Acme Corp International"
+            <label class="nc-label">{{ 'NEW_CLIENT.COMPANY_NAME' | translate }}</label>
+            <input class="nc-input" type="text" [placeholder]="'NEW_CLIENT.COMPANY_PLACEHOLDER' | translate"
               [ngModel]="companyName()" (ngModelChange)="companyName.set($event)" />
           </div>
           <div class="nc-field">
-            <label class="nc-label">Customer Reference (Auto-gen)</label>
+            <label class="nc-label">{{ 'NEW_CLIENT.REFERENCE' | translate }}</label>
             <input class="nc-input nc-input--readonly" type="text" readonly [value]="reference()" />
           </div>
           <div class="nc-field nc-field--span2">
-            <label class="nc-label">Website</label>
+            <label class="nc-label">{{ 'NEW_CLIENT.WEBSITE' | translate }}</label>
             <div class="nc-input-icon-wrap">
               <span class="material-symbols-outlined nc-input-icon">language</span>
               <input class="nc-input nc-input--icon" type="url" placeholder="https://www.acme.com"
@@ -55,21 +55,21 @@
       <section class="nc-card">
         <div class="nc-card__header">
           <span class="material-symbols-outlined nc-card__icon">person</span>
-          <h2 class="nc-card__title">Primary Contact</h2>
+          <h2 class="nc-card__title">{{ 'NEW_CLIENT.SECTION_CONTACT' | translate }}</h2>
         </div>
         <div class="nc-grid nc-grid--3">
           <div class="nc-field">
-            <label class="nc-label">Full Name</label>
+            <label class="nc-label">{{ 'NEW_CLIENT.FULL_NAME' | translate }}</label>
             <input class="nc-input" type="text" placeholder="John Doe"
               [ngModel]="fullName()" (ngModelChange)="fullName.set($event)" />
           </div>
           <div class="nc-field">
-            <label class="nc-label">Email Address</label>
+            <label class="nc-label">{{ 'NEW_CLIENT.EMAIL' | translate }}</label>
             <input class="nc-input" type="email" placeholder="john.doe@company.com"
               [ngModel]="email()" (ngModelChange)="email.set($event)" />
           </div>
           <div class="nc-field">
-            <label class="nc-label">Phone Number</label>
+            <label class="nc-label">{{ 'NEW_CLIENT.PHONE' | translate }}</label>
             <input class="nc-input" type="tel" placeholder="+1 (555) 000-0000"
               [ngModel]="phone()" (ngModelChange)="phone.set($event)" />
           </div>
@@ -85,28 +85,28 @@
       <section class="nc-card">
         <div class="nc-card__header">
           <span class="material-symbols-outlined nc-card__icon">location_on</span>
-          <h2 class="nc-card__title">Billing Address</h2>
+          <h2 class="nc-card__title">{{ 'NEW_CLIENT.SECTION_BILLING' | translate }}</h2>
         </div>
         <div class="nc-grid nc-grid--1">
           <div class="nc-field">
-            <label class="nc-label">Street</label>
+            <label class="nc-label">{{ 'NEW_CLIENT.STREET' | translate }}</label>
             <textarea class="nc-textarea" rows="2" placeholder="123 Financial District, Suite 400"
               [ngModel]="street()" (ngModelChange)="street.set($event)"></textarea>
           </div>
           <div class="nc-grid nc-grid--2">
             <div class="nc-field">
-              <label class="nc-label">City</label>
+              <label class="nc-label">{{ 'NEW_CLIENT.CITY' | translate }}</label>
               <input class="nc-input" type="text" placeholder="Paris"
                 [ngModel]="city()" (ngModelChange)="city.set($event)" />
             </div>
             <div class="nc-field">
-              <label class="nc-label">Postal Code</label>
+              <label class="nc-label">{{ 'NEW_CLIENT.POSTAL_CODE' | translate }}</label>
               <input class="nc-input" type="text" placeholder="75001"
                 [ngModel]="postalCode()" (ngModelChange)="postalCode.set($event)" />
             </div>
           </div>
           <div class="nc-field">
-            <label class="nc-label">Country</label>
+            <label class="nc-label">{{ 'NEW_CLIENT.COUNTRY' | translate }}</label>
             <select class="nc-select" [ngModel]="country()" (ngModelChange)="country.set($event)">
               @for (c of countries; track c) {
                 <option [value]="c">{{ c }}</option>
@@ -120,16 +120,16 @@
       <section class="nc-card">
         <div class="nc-card__header">
           <span class="material-symbols-outlined nc-card__icon">account_balance</span>
-          <h2 class="nc-card__title">Financial Details</h2>
+          <h2 class="nc-card__title">{{ 'NEW_CLIENT.SECTION_FINANCIAL' | translate }}</h2>
         </div>
         <div class="nc-grid nc-grid--1">
           <div class="nc-field">
-            <label class="nc-label">Tax ID / VAT Number</label>
+            <label class="nc-label">{{ 'NEW_CLIENT.TAX_ID' | translate }}</label>
             <input class="nc-input" type="text" placeholder="FR 12 345 678 901"
               [ngModel]="taxId()" (ngModelChange)="taxId.set($event)" />
           </div>
           <div class="nc-field">
-            <label class="nc-label">Currency</label>
+            <label class="nc-label">{{ 'NEW_CLIENT.CURRENCY' | translate }}</label>
             <select class="nc-select" [ngModel]="currency()" (ngModelChange)="currency.set($event)">
               @for (c of currencies; track c.value) {
                 <option [value]="c.value">{{ c.label }}</option>
@@ -137,7 +137,7 @@
             </select>
           </div>
           <div class="nc-field">
-            <label class="nc-label">Payment Terms</label>
+            <label class="nc-label">{{ 'NEW_CLIENT.PAYMENT_TERMS' | translate }}</label>
             <select class="nc-select" [ngModel]="paymentTerms()" (ngModelChange)="paymentTerms.set($event)">
               @for (t of paymentTermsOptions; track t) {
                 <option [value]="t">{{ t }}</option>
@@ -154,11 +154,9 @@
   <!-- BOTTOM BANNER -->
   <div class="nc-banner">
     <div class="nc-banner__content">
-      <h3 class="nc-banner__title">Account Setup Finalization</h3>
+      <h3 class="nc-banner__title">{{ 'NEW_CLIENT.BANNER_TITLE' | translate }}</h3>
       <p class="nc-banner__body">
-        Upon saving, this customer will be immediately available for invoice generation and quote drafting.
-        Precision Ledger will automatically track all transactions against the unique reference number
-        <strong>{{ reference() }}</strong>.
+        {{ 'NEW_CLIENT.BANNER_BODY' | translate }}
       </p>
     </div>
     <div class="nc-banner__illustration">
