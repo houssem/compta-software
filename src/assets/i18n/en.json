@@ -1,0 +1,10 @@
+{
+  "app": {
+    "title": "Billing"
+  },
+  "common": {
+    "language": "Language",
+    "loading": "Loading...",
+    "error": "Error"
+  }
+}

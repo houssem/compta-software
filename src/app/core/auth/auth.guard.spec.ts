@@ -10,7 +10,9 @@ describe('authGuard', () => {
   let router: Router
 
   beforeEach(() => {
-    authServiceSpy = jasmine.createSpyObj('AuthService', ['isAuthenticated'])
+    authServiceSpy = jasmine.createSpyObj('AuthService', [], {
+      currentUser: jasmine.createSpy('currentUser').and.returnValue(null)
+    })
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       providers: [{ provide: AuthService, useValue: authServiceSpy }]
@@ -19,7 +21,7 @@ describe('authGuard', () => {
   })
 
   it('returns true when authenticated', () => {
-    authServiceSpy.isAuthenticated.and.returnValue(true)
+    (authServiceSpy.currentUser as jasmine.Spy).and.returnValue({ id: '1', email: 'test@test.com', name: 'Test', role: 'admin' })
     const result = TestBed.runInInjectionContext(() =>
       authGuard({} as ActivatedRouteSnapshot, {} as RouterStateSnapshot)
     )
@@ -27,7 +29,7 @@ describe('authGuard', () => {
   })
 
   it('returns UrlTree to /login when not authenticated', () => {
-    authServiceSpy.isAuthenticated.and.returnValue(false)
+    (authServiceSpy.currentUser as jasmine.Spy).and.returnValue(null)
     const result = TestBed.runInInjectionContext(() =>
       authGuard({} as ActivatedRouteSnapshot, {} as RouterStateSnapshot)
     )
