@@ -1,15 +1,79 @@
 {
-  "registrations": [],
+  "registrations": [
+    {
+      "fullName": "Test User",
+      "email": "test@example.com",
+      "password": "password123",
+      "company": {
+        "name": "Acme SAS",
+        "vatNumber": "",
+        "industry": "Technologie",
+        "address": {
+          "streetNo": "",
+          "streetName": "Rue de la Paix",
+          "city": "Paris",
+          "postalCode": "75001",
+          "country": "France"
+        },
+        "logo": ""
+      },
+      "bank": {
+        "accountHolder": "Test User",
+        "bankName": "BNP Paribas",
+        "iban": "FR76 3000 6000 0112 3456 7890 189",
+        "swiftBic": "BNPAFRPPXXX"
+      },
+      "status": "pending",
+      "submittedAt": "2026-05-22T20:09:19.454Z",
+      "id": 1
+    }
+  ],
   "industries": [
-    { "id": 1, "value": "Technologie", "label": "Technologie & IT" },
-    { "id": 2, "value": "Finance", "label": "Finance & Comptabilité" },
-    { "id": 3, "value": "Santé", "label": "Santé & Médical" },
-    { "id": 4, "value": "Commerce", "label": "Commerce & Distribution" },
-    { "id": 5, "value": "Industrie", "label": "Industrie & Production" },
-    { "id": 6, "value": "Immobilier", "label": "Immobilier & Construction" },
-    { "id": 7, "value": "Conseil", "label": "Conseil & Services" },
-    { "id": 8, "value": "Éducation", "label": "Éducation & Formation" },
-    { "id": 9, "value": "Autre", "label": "Autre" }
+    {
+      "id": 1,
+      "value": "Technologie",
+      "label": "Technologie & IT"
+    },
+    {
+      "id": 2,
+      "value": "Finance",
+      "label": "Finance & Comptabilité"
+    },
+    {
+      "id": 3,
+      "value": "Santé",
+      "label": "Santé & Médical"
+    },
+    {
+      "id": 4,
+      "value": "Commerce",
+      "label": "Commerce & Distribution"
+    },
+    {
+      "id": 5,
+      "value": "Industrie",
+      "label": "Industrie & Production"
+    },
+    {
+      "id": 6,
+      "value": "Immobilier",
+      "label": "Immobilier & Construction"
+    },
+    {
+      "id": 7,
+      "value": "Conseil",
+      "label": "Conseil & Services"
+    },
+    {
+      "id": 8,
+      "value": "Éducation",
+      "label": "Éducation & Formation"
+    },
+    {
+      "id": 9,
+      "value": "Autre",
+      "label": "Autre"
+    }
   ],
   "countries": [
     {
