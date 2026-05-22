@@ -135,3 +135,167 @@
 
   &--done { background: rgba(16, 185, 129, 0.45); }
 }
+
+/* ── GRID ────────────────────────────────────────────────── */
+.rg-grid {
+  display: grid;
+  gap: 18px;
+  margin-bottom: 24px;
+  &--2 { grid-template-columns: 1fr 1fr; }
+  @media (max-width: 560px) { &--2 { grid-template-columns: 1fr; } }
+}
+
+.rg-field { display: flex; flex-direction: column; gap: 6px; }
+.rg-field--span2 { grid-column: span 2; @media (max-width: 560px) { grid-column: span 1; } }
+
+/* ── LABELS ──────────────────────────────────────────────── */
+.rg-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-on-surface-variant);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.rg-req { color: #ef4444; margin-left: 2px; }
+
+/* ── INPUTS ──────────────────────────────────────────────── */
+.rg-input-wrap { position: relative; display: flex; align-items: center; }
+
+.rg-input-icon {
+  position: absolute;
+  left: 12px;
+  font-size: 17px;
+  color: var(--color-on-surface-variant);
+  opacity: 0.55;
+  pointer-events: none;
+  transition: color 0.18s, opacity 0.18s;
+}
+
+.rg-input {
+  width: 100%;
+  height: 42px;
+  background: #fff;
+  border: 1.5px solid var(--color-border-subtle);
+  border-radius: 8px;
+  padding: 0 14px;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--color-on-surface);
+  transition: border-color 0.15s, box-shadow 0.15s;
+  box-sizing: border-box;
+  outline: none;
+
+  &::placeholder {
+    color: var(--color-on-surface-variant);
+    opacity: 0.45;
+  }
+
+  &:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(0, 30, 64, 0.09);
+  }
+
+  &--icon { padding-left: 40px; }
+
+  &--error {
+    border-color: #ef4444;
+    &:focus { border-color: #ef4444; box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1); }
+  }
+}
+
+/* Focus-within: icon follows input focus */
+.rg-input-wrap:focus-within .rg-input-icon {
+  color: var(--color-primary);
+  opacity: 1;
+}
+
+.rg-eye-btn {
+  position: absolute;
+  right: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  background: transparent;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  color: var(--color-on-surface-variant);
+  transition: background 0.15s, color 0.15s;
+
+  .material-symbols-outlined { font-size: 18px; }
+
+  &:hover {
+    background: rgba(0, 30, 64, 0.06);
+    color: var(--color-primary);
+  }
+}
+
+/* ── SELECT ──────────────────────────────────────────────── */
+.rg-select {
+  width: 100%;
+  height: 42px;
+  background: #fff;
+  border: 1.5px solid var(--color-border-subtle);
+  border-radius: 8px;
+  padding: 0 36px 0 14px;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--color-on-surface);
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  appearance: none;
+  outline: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='%2343474f'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 18px;
+
+  &:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(0, 30, 64, 0.09);
+  }
+
+  &--error { border-color: #ef4444; }
+
+  option { background: #fff; color: var(--color-on-surface); }
+}
+
+/* ── FILE UPLOAD ─────────────────────────────────────────── */
+.rg-upload {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--color-surface-container-low);
+  border: 1.5px dashed var(--color-border-subtle);
+  border-radius: 8px;
+  padding: 16px 18px;
+  font-size: 13px;
+  color: var(--color-on-surface-variant);
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    background: rgba(0, 30, 64, 0.03);
+  }
+}
+.rg-upload-input { display: none; }
+
+/* ── FIELD ERROR ─────────────────────────────────────────── */
+.rg-field-error {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #ef4444;
+  margin-top: -2px;
+  animation: fadeUp 0.2s ease both;
+
+  .material-symbols-outlined { font-size: 14px; flex-shrink: 0; }
+}
