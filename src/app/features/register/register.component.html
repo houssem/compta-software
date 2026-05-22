@@ -56,7 +56,7 @@
         <div class="rg-stepper__circle"
           [class.rg-stepper__circle--active]="currentStep() === 4"
           [class.rg-stepper__circle--done]="false">
-          @if (currentStep() === 4) { <span class="material-symbols-outlined">check</span> } @else { ✓ }
+          @if (currentStep() === 4) { <span class="material-symbols-outlined">check</span> } @else { 4 }
         </div>
         <span class="rg-stepper__label" [class.rg-stepper__label--active]="currentStep() === 4">
           {{ 'REGISTER.STEP_CONFIRM' | translate }}
@@ -217,6 +217,7 @@
             <label class="rg-label">{{ 'REGISTER.COUNTRY' | translate }} <span class="rg-req">*</span></label>
             <select class="rg-select" [class.rg-select--error]="err.country()"
               [ngModel]="country()" (ngModelChange)="country.set($event)">
+              <option value="">{{ 'REGISTER.COUNTRY' | translate }}</option>
               @for (c of countries; track c) {
                 <option [value]="c">{{ c }}</option>
               }
