@@ -1,21 +1,36 @@
-import { Component, computed, signal } from '@angular/core'
-import { RouterLink } from '@angular/router'
+import { Component, computed, signal, OnInit, inject, HostListener } from '@angular/core'
+import { RouterLink, Router } from '@angular/router'
 import { CommonModule } from '@angular/common'
 import { FormsModule } from '@angular/forms'
 import { TranslateModule } from '@ngx-translate/core'
+import { HttpClient } from '@angular/common/http'
 
 type InvoiceStatus = 'overdue' | 'paid' | 'pending' | 'approved' | 'draft' | 'sent'
 
+interface ApiInvoice {
+  id: number | string
+  clientName: string
+  invoiceNumber: string
+  issueDate: string
+  dueDate: string
+  currency: string
+  totalTTC: number
+  status: InvoiceStatus
+  createdAt: string
+}
+
 interface Invoice {
   id: string
+  dbId: string
   client: string
   initial: string
   avatarColor: string
   dateFacture: string
   echeance: string
   montantTTC: number
+  currency: string
   statut: InvoiceStatus
-  echeanceOverdue?: boolean
+  echeanceOverdue: boolean
 }
 
 interface Activity {
@@ -31,55 +46,56 @@ interface Activity {
   templateUrl: './invoices.component.html',
   styleUrl: './invoices.component.scss'
 })
-export class InvoicesComponent {
-  searchQuery = signal('')
+export class InvoicesComponent implements OnInit {
+
+  private http   = inject(HttpClient)
+  private router = inject(Router)
+
+  loading = signal(true)
+  error   = signal('')
+
+  openMenuId     = signal<string | null>(null)
+  confirmDeleteId = signal<string | null>(null)
+
+  searchQuery  = signal('')
   statusFilter = signal<InvoiceStatus | ''>('')
-  currentPage = signal(1)
+  currentPage  = signal(1)
   readonly pageSize = 5
 
-  readonly allInvoices: Invoice[] = [
-    { id: 'FAC-2023-089', client: 'DataCloud Solutions',  initial: 'D', avatarColor: '#3B82F6', dateFacture: '12 Oct 2023', echeance: '12 Nov 2023', montantTTC: 1250.00, statut: 'overdue',  echeanceOverdue: true },
-    { id: 'FAC-2023-090', client: 'Office Supplies Co.',  initial: 'O', avatarColor: '#10B981', dateFacture: '01 Dec 2023', echeance: '31 Dec 2023', montantTTC:  452.10, statut: 'paid' },
-    { id: 'FAC-2023-091', client: 'Swift Logistique',     initial: 'S', avatarColor: '#F59E0B', dateFacture: '15 Dec 2023', echeance: '15 Jan 2024', montantTTC: 2800.00, statut: 'pending' },
-    { id: 'FAC-2023-092', client: 'Allo Pub SARL',        initial: 'A', avatarColor: '#6366F1', dateFacture: '18 Dec 2023', echeance: '18 Jan 2024', montantTTC: 1100.00, statut: 'approved' },
-    { id: 'FAC-2023-093', client: 'Maintenance Pro',      initial: 'M', avatarColor: '#94A3B8', dateFacture: '20 Dec 2023', echeance: '20 Jan 2024', montantTTC:  890.00, statut: 'draft' },
-    { id: 'FAC-2023-094', client: 'TechCorp Dynamics',    initial: 'T', avatarColor: '#EC4899', dateFacture: '22 Dec 2023', echeance: '22 Jan 2024', montantTTC: 3400.00, statut: 'sent' },
-    { id: 'FAC-2023-095', client: 'Réseau Digital',       initial: 'R', avatarColor: '#14B8A6', dateFacture: '28 Dec 2023', echeance: '28 Jan 2024', montantTTC:  760.00, statut: 'paid' },
-    { id: 'FAC-2024-001', client: 'Groupe Énergie SA',    initial: 'G', avatarColor: '#F97316', dateFacture: '03 Jan 2024', echeance: '03 Feb 2024', montantTTC: 5200.00, statut: 'pending' },
-    { id: 'FAC-2024-002', client: 'Nexus Consulting',     initial: 'N', avatarColor: '#8B5CF6', dateFacture: '05 Jan 2024', echeance: '05 Feb 2024', montantTTC: 1875.50, statut: 'approved' },
-    { id: 'FAC-2024-003', client: 'Horizon Ventures',     initial: 'H', avatarColor: '#0EA5E9', dateFacture: '07 Jan 2024', echeance: '07 Feb 2024', montantTTC: 3100.00, statut: 'overdue', echeanceOverdue: true },
-  ]
+  private allInvoices = signal<Invoice[]>([])
 
+  // ── KPIs ────────────────────────────────────────────
+  totalAPayer = computed(() =>
+    this.allInvoices().filter(i => i.statut !== 'paid').reduce((s, i) => s + i.montantTTC, 0)
+  )
+  recuesCount    = computed(() => this.allInvoices().length)
+  enAttenteCount = computed(() => this.allInvoices().filter(i => i.statut === 'pending').length)
+  totalEnRetard  = computed(() =>
+    this.allInvoices().filter(i => i.echeanceOverdue || i.statut === 'overdue')
+                      .reduce((s, i) => s + i.montantTTC, 0)
+  )
+
+  // ── Filtering & pagination ───────────────────────────
   filteredInvoices = computed(() => {
     const q = this.searchQuery().toLowerCase()
     const s = this.statusFilter()
-    return this.allInvoices.filter(inv => {
+    return this.allInvoices().filter(inv => {
       const matchesSearch = !q || inv.client.toLowerCase().includes(q) || inv.id.toLowerCase().includes(q)
       const matchesStatus = !s || inv.statut === s
       return matchesSearch && matchesStatus
     })
   })
 
-  totalPages = computed(() => Math.ceil(this.filteredInvoices().length / this.pageSize))
+  totalPages = computed(() => Math.max(1, Math.ceil(this.filteredInvoices().length / this.pageSize)))
 
   pagedInvoices = computed(() => {
     const start = (this.currentPage() - 1) * this.pageSize
     return this.filteredInvoices().slice(start, start + this.pageSize)
   })
 
-  pages = computed(() => {
-    const total = this.totalPages()
-    return Array.from({ length: total }, (_, i) => i + 1)
-  })
+  pages = computed(() => Array.from({ length: this.totalPages() }, (_, i) => i + 1))
 
-  pageEnd = computed(() =>
-    Math.min(this.currentPage() * this.pageSize, this.filteredInvoices().length)
-  )
-
-  readonly totalAPayer   = 14280.50
-  readonly recuesCount   = 8
-  readonly enAttenteCount = 3
-  readonly totalEnRetard = 3450.00
+  pageEnd = computed(() => Math.min(this.currentPage() * this.pageSize, this.filteredInvoices().length))
 
   readonly activities: Activity[] = [
     { dot: 'green', text: 'Paiement effectué pour <strong>Office supplies Co.</strong>', sub: 'Il y a 2 heures · Par Jean D.' },
@@ -96,23 +112,100 @@ export class InvoicesComponent {
     { value: 'sent',     label: 'INVOICES.STATUS_SENT' },
   ]
 
+  ngOnInit(): void {
+    this.http.get<ApiInvoice[]>('/api/invoices').subscribe({
+      next: (data) => {
+        this.allInvoices.set(data.map(a => this.mapInvoice(a)))
+        this.loading.set(false)
+      },
+      error: () => {
+        this.error.set('Impossible de charger les factures. Veuillez réessayer.')
+        this.loading.set(false)
+      }
+    })
+  }
+
+  // ── Actions ──────────────────────────────────────────
+  @HostListener('document:click')
+  onDocumentClick(): void {
+    this.openMenuId.set(null)
+    this.confirmDeleteId.set(null)
+  }
+
+  toggleMenu(dbId: string, event: MouseEvent): void {
+    event.stopPropagation()
+    this.confirmDeleteId.set(null)
+    this.openMenuId.set(this.openMenuId() === dbId ? null : dbId)
+  }
+
+  editInvoice(dbId: string): void {
+    this.openMenuId.set(null)
+    this.router.navigate(['/invoice/edit', dbId])
+  }
+
+  confirmDelete(dbId: string, event: MouseEvent): void {
+    event.stopPropagation()
+    this.confirmDeleteId.set(dbId)
+  }
+
+  cancelDelete(event: MouseEvent): void {
+    event.stopPropagation()
+    this.confirmDeleteId.set(null)
+    this.openMenuId.set(null)
+  }
+
+  deleteInvoice(dbId: string, event: MouseEvent): void {
+    event.stopPropagation()
+    this.http.delete(`/api/invoices/${dbId}`).subscribe({
+      next: () => {
+        this.allInvoices.update(list => list.filter(i => i.dbId !== dbId))
+        this.openMenuId.set(null)
+        this.confirmDeleteId.set(null)
+        if (this.currentPage() > this.totalPages()) this.currentPage.set(this.totalPages())
+      }
+    })
+  }
+
   goToPage(page: number): void {
-    if (page >= 1 && page <= this.totalPages()) {
-      this.currentPage.set(page)
+    if (page >= 1 && page <= this.totalPages()) this.currentPage.set(page)
+  }
+
+  onSearchChange(val: string): void { this.searchQuery.set(val); this.currentPage.set(1) }
+  onStatusChange(val: string): void { this.statusFilter.set(val as InvoiceStatus | ''); this.currentPage.set(1) }
+
+  formatAmount(value: number, currency = 'TND'): string {
+    const symbols: Record<string, string> = { TND: 'DT', EUR: '€', USD: '$', GBP: '£' }
+    const symbol = symbols[currency] ?? currency
+    return value.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ' + symbol
+  }
+
+  // ── Mapping ──────────────────────────────────────────
+  private mapInvoice(api: ApiInvoice): Invoice {
+    const today = new Date().toISOString().split('T')[0]
+    const overdue = api.dueDate < today && api.status !== 'paid'
+    return {
+      id:             api.invoiceNumber,
+      dbId:           String(api.id),
+      client:         api.clientName,
+      initial:        api.clientName.charAt(0).toUpperCase(),
+      avatarColor:    this.hashColor(api.clientName),
+      dateFacture:    this.formatDate(api.issueDate),
+      echeance:       this.formatDate(api.dueDate),
+      montantTTC:     api.totalTTC,
+      currency:       api.currency,
+      statut:         overdue ? 'overdue' : api.status,
+      echeanceOverdue: overdue
     }
   }
 
-  onSearchChange(val: string): void {
-    this.searchQuery.set(val)
-    this.currentPage.set(1)
+  private formatDate(iso: string): string {
+    return new Date(iso).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })
   }
 
-  onStatusChange(val: string): void {
-    this.statusFilter.set(val as InvoiceStatus | '')
-    this.currentPage.set(1)
-  }
-
-  formatAmount(value: number): string {
-    return value.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €'
+  private hashColor(name: string): string {
+    const palette = ['#3B82F6', '#10B981', '#F59E0B', '#6366F1', '#EC4899', '#14B8A6', '#F97316', '#8B5CF6', '#0EA5E9', '#94A3B8']
+    let hash = 0
+    for (const ch of name) hash = (hash * 31 + ch.charCodeAt(0)) & 0xffff
+    return palette[hash % palette.length]
   }
 }

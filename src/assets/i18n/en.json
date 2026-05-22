@@ -146,7 +146,7 @@
     "SEARCH_PLACEHOLDER": "Search a client...",
     "NEW_CLIENT": "New Client",
     "KPI_TOTAL": "Total Clients",
-    "KPI_NEW": "New (30d)",
+    "KPI_NEW": "New clients (30d)",
     "KPI_BALANCE": "Global Balance Due",
     "COL_NAME": "Client Name",
     "COL_CONTACT": "Contact",
@@ -158,7 +158,11 @@
     "PAGE_INFO": "Showing {{start}} to {{end}} of {{total}} clients",
     "STATUS_OK": "UP TO DATE",
     "STATUS_OVERDUE": "{{count}} OVERDUE",
-    "STATUS_PENDING": "{{count}} PENDING"
+    "STATUS_PENDING": "{{count}} PENDING",
+    "KPI_FILTERED": "Filtered results",
+    "COL_LOCATION": "Location",
+    "COL_CURRENCY": "Currency",
+    "COL_DATE": "Created"
   },
   "NEW_CLIENT": {
     "BREADCRUMB": "Customers",
@@ -166,6 +170,9 @@
     "CANCEL": "Cancel",
     "SAVE": "Save Customer",
     "TITLE": "New Customer Profile",
+    "EDIT_TITLE": "Edit Customer",
+    "CREATE_SUB": "Fill in the information below to add a new customer.",
+    "EDIT_SUB": "Update the customer information and save your changes.",
     "SECTION_GENERAL": "General Information",
     "COMPANY_NAME": "Company Name",
     "COMPANY_PLACEHOLDER": "Acme Corp International",
@@ -190,6 +197,7 @@
   },
   "NEW_INVOICE": {
     "TITLE": "Create New Invoice",
+    "EDIT_TITLE": "Edit Invoice",
     "SECTION_GENERAL": "General Information",
     "CLIENT_NAME": "Client Name",
     "CLIENT_PLACEHOLDER": "Search or select a client...",
@@ -216,6 +224,7 @@
     "TOTAL_TTC": "Total TTC",
     "SEND_EMAIL": "Send by Email",
     "SAVE": "Save",
+    "UPDATE": "Update Invoice",
     "PREVIEW": "Preview",
     "LAST_SAVED": "Last saved:",
     "TIP_TITLE": "Smart Tip",

@@ -1,8 +1,13 @@
-import { Component, computed, signal } from '@angular/core'
+import { Component, computed, signal, OnInit, inject, HostListener } from '@angular/core'
 import { FormsModule } from '@angular/forms'
-import { RouterLink } from '@angular/router'
+import { RouterLink, Router, ActivatedRoute } from '@angular/router'
 import { CommonModule } from '@angular/common'
 import { TranslateModule } from '@ngx-translate/core'
+import { HttpClient } from '@angular/common/http'
+import { forkJoin } from 'rxjs'
+import { Currency, Client } from '../../../shared/models/client.model'
+
+interface Language { id: number; value: string; label: string }
 
 interface LineItem {
   id: number
@@ -13,6 +18,21 @@ interface LineItem {
   vatPct: number
 }
 
+interface StoredInvoice {
+  id: number | string
+  clientId: string
+  clientName: string
+  invoiceNumber: string
+  issueDate: string
+  dueDate: string
+  currency: string
+  language: string
+  lineItems: LineItem[]
+  internalNotes: string
+  termsAndConditions: string
+  status: string
+}
+
 @Component({
   selector: 'app-new-invoice',
   standalone: true,
@@ -20,57 +40,186 @@ interface LineItem {
   templateUrl: './new-invoice.component.html',
   styleUrl: './new-invoice.component.scss'
 })
-export class NewInvoiceComponent {
-  clientName = signal('')
-  invoiceNumber = signal('FAC-2026-0043')
-  issueDate = signal('2026-05-12')
-  dueDate = signal('2026-06-12')
-  currency = signal('EUR')
-  language = signal('FR')
-  internalNotes = signal('')
-  termsAndConditions = signal('Payment is due within 30 days. Late payments are subject to a 5% monthly fee.')
-  lastSaved = signal('Just now')
+export class NewInvoiceComponent implements OnInit {
 
-  private nextId = 3
-  lineItems = signal<LineItem[]>([
-    { id: 1, description: 'Strategic consulting', qty: 1, priceHT: 2500, discPct: 0, vatPct: 20 },
-    { id: 2, description: 'Cloud setup',          qty: 45, priceHT: 12,  discPct: 10, vatPct: 20 }
-  ])
+  private http   = inject(HttpClient)
+  private router = inject(Router)
+  private route  = inject(ActivatedRoute)
 
-  vatRates = [0, 5.5, 10, 20]
-  currencies = ['EUR', 'USD', 'GBP', 'CHF']
-  languages = ['FR', 'EN', 'DE', 'ES']
+  // Edit mode
+  editMode   = signal(false)
+  private invoiceDbId: string | null = null
 
-  lineTotal(item: LineItem): number {
-    const base = item.qty * item.priceHT
-    const afterDisc = base * (1 - item.discPct / 100)
-    return afterDisc
-  }
+  // Invoice fields
+  invoiceNumber      = signal(this.genInvoiceNumber())
+  issueDate          = signal(this.dateOffset(0))
+  dueDate            = signal(this.dateOffset(30))
+  currency           = signal('TND')
+  language           = signal('FR')
+  internalNotes      = signal('')
+  termsAndConditions = signal('')
 
-  totalHT = computed(() =>
-    this.lineItems().reduce((sum, item) => sum + this.lineTotal(item), 0)
+  // Client selector
+  allClients      = signal<Client[]>([])
+  selectedClient  = signal<Client | null>(null)
+  clientSearch    = signal('')
+  clientModalOpen = signal(false)
+
+  filteredClientOptions = computed(() => {
+    const q = this.clientSearch().toLowerCase().trim()
+    if (!q) return this.allClients()
+    return this.allClients().filter(c =>
+      c.companyName.toLowerCase().includes(q) ||
+      c.contact.fullName.toLowerCase().includes(q) ||
+      c.contact.email.toLowerCase().includes(q)
+    )
+  })
+
+  // Config from API
+  currencies    = signal<Currency[]>([])
+  languages     = signal<Language[]>([])
+  configLoading = signal(true)
+
+  // Line items
+  private nextId = 1
+  lineItems = signal<LineItem[]>([])
+  vatRates  = [0, 7, 13, 19]
+
+  // Validation / save state
+  formSubmitted = signal(false)
+  saving        = signal(false)
+  saveError     = signal('')
+
+  isFormValid = computed(() =>
+    !!this.selectedClient() &&
+    !!this.issueDate() &&
+    !!this.dueDate() &&
+    this.lineItems().length > 0 &&
+    this.lineItems().every(i => i.description.trim() !== '' && i.qty > 0 && i.priceHT >= 0)
   )
+
+  // Computed totals
+  lineTotal = (item: LineItem) => item.qty * item.priceHT * (1 - item.discPct / 100)
+
+  totalHT = computed(() => this.lineItems().reduce((s, i) => s + this.lineTotal(i), 0))
 
   vatBreakdown = computed(() => {
     const map = new Map<number, number>()
     for (const item of this.lineItems()) {
-      const ht = this.lineTotal(item)
-      const vat = ht * (item.vatPct / 100)
+      const vat = this.lineTotal(item) * (item.vatPct / 100)
       map.set(item.vatPct, (map.get(item.vatPct) ?? 0) + vat)
     }
     return Array.from(map.entries()).map(([rate, amount]) => ({ rate, amount }))
   })
 
-  totalVAT = computed(() =>
-    this.vatBreakdown().reduce((sum, v) => sum + v.amount, 0)
-  )
-
+  totalVAT = computed(() => this.vatBreakdown().reduce((s, v) => s + v.amount, 0))
   totalTTC = computed(() => this.totalHT() + this.totalVAT())
 
+  // Validation computed signals
+  clientError    = computed(() => this.formSubmitted() && !this.selectedClient())
+  issueDateError = computed(() => this.formSubmitted() && !this.issueDate())
+  dueDateError   = computed(() => this.formSubmitted() && !this.dueDate())
+  noItemsError   = computed(() => this.formSubmitted() && this.lineItems().length === 0)
+
+  itemDescError  = (item: LineItem) => this.formSubmitted() && !item.description.trim()
+  itemQtyError   = (item: LineItem) => this.formSubmitted() && item.qty <= 0
+  itemPriceError = (item: LineItem) => this.formSubmitted() && item.priceHT < 0
+
+  @HostListener('document:keydown.escape')
+  onEscape() { this.clientModalOpen.set(false) }
+
+  ngOnInit(): void {
+    const id = this.route.snapshot.paramMap.get('id')
+    if (id) {
+      this.editMode.set(true)
+      this.invoiceDbId = id
+    }
+
+    const config$ = forkJoin({
+      currencies: this.http.get<Currency[]>('/api/currencies'),
+      languages:  this.http.get<Language[]>('/api/languages'),
+      clients:    this.http.get<Client[]>('/api/clients')
+    })
+
+    if (this.editMode()) {
+      forkJoin({
+        config:   config$,
+        invoice:  this.http.get<StoredInvoice>(`/api/invoices/${id}`)
+      }).subscribe({
+        next: ({ config: { currencies, languages, clients }, invoice }) => {
+          this.currencies.set(currencies)
+          this.languages.set(languages)
+          this.allClients.set(clients)
+          this.configLoading.set(false)
+          this.patchFromInvoice(invoice, clients)
+        },
+        error: () => this.router.navigate(['/invoices'])
+      })
+    } else {
+      config$.subscribe({
+        next: ({ currencies, languages, clients }) => {
+          this.currencies.set(currencies)
+          this.languages.set(languages)
+          this.allClients.set(clients)
+          this.configLoading.set(false)
+        },
+        error: () => this.configLoading.set(false)
+      })
+    }
+  }
+
+  private patchFromInvoice(inv: StoredInvoice, clients: Client[]): void {
+    this.invoiceNumber.set(inv.invoiceNumber)
+    this.issueDate.set(inv.issueDate)
+    this.dueDate.set(inv.dueDate)
+    this.currency.set(inv.currency)
+    this.language.set(inv.language)
+    this.internalNotes.set(inv.internalNotes ?? '')
+    this.termsAndConditions.set(inv.termsAndConditions ?? '')
+    const maxId = Math.max(0, ...inv.lineItems.map(i => i.id))
+    this.nextId = maxId + 1
+    this.lineItems.set(inv.lineItems)
+    const client = clients.find(c => c.id === inv.clientId) ?? null
+    this.selectedClient.set(client)
+  }
+
+  // ── Helpers ───────────────────────────────────────────
+  private dateOffset(days: number): string {
+    const d = new Date()
+    d.setDate(d.getDate() + days)
+    return d.toISOString().split('T')[0]
+  }
+
+  private genInvoiceNumber(): string {
+    const year = new Date().getFullYear()
+    const seq  = String(Math.floor(Math.random() * 9000) + 1000)
+    return `FAC-${year}-${seq}`
+  }
+
+  // ── Client selector ───────────────────────────────────
+  openClientModal(): void { this.clientSearch.set(''); this.clientModalOpen.set(true) }
+  closeClientModal(): void { this.clientModalOpen.set(false) }
+
+  selectClient(client: Client): void {
+    this.selectedClient.set(client)
+    this.clientModalOpen.set(false)
+    if (!this.editMode() && client.financial.currency) this.currency.set(client.financial.currency)
+  }
+
+  clearClient(event: MouseEvent): void {
+    event.stopPropagation()
+    this.selectedClient.set(null)
+  }
+
+  getInitials(name: string): string {
+    return name.trim().split(/\s+/).map(w => w[0]).join('').toUpperCase().slice(0, 2)
+  }
+
+  // ── Line items ────────────────────────────────────────
   addItem(): void {
     this.lineItems.update(items => [
       ...items,
-      { id: this.nextId++, description: '', qty: 1, priceHT: 0, discPct: 0, vatPct: 20 }
+      { id: this.nextId++, description: '', qty: 1, priceHT: 0, discPct: 0, vatPct: 19 }
     ])
   }
 
@@ -79,24 +228,52 @@ export class NewInvoiceComponent {
   }
 
   updateItem(id: number, field: keyof LineItem, value: string | number): void {
-    this.lineItems.update(items =>
-      items.map(i => i.id === id ? { ...i, [field]: value } : i)
-    )
+    this.lineItems.update(items => items.map(i => i.id === id ? { ...i, [field]: value } : i))
   }
 
   formatAmount(value: number): string {
-    return value.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €'
+    const symbol = this.currencies().find(c => c.value === this.currency())?.symbol ?? this.currency()
+    return value.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ' + symbol
   }
 
+  // ── Save ──────────────────────────────────────────────
   save(): void {
-    this.lastSaved.set('Just now')
+    this.formSubmitted.set(true)
+    if (!this.isFormValid()) return
+
+    this.saving.set(true)
+    this.saveError.set('')
+
+    const payload = {
+      clientId:           this.selectedClient()!.id,
+      clientName:         this.selectedClient()!.companyName,
+      invoiceNumber:      this.invoiceNumber(),
+      issueDate:          this.issueDate(),
+      dueDate:            this.dueDate(),
+      currency:           this.currency(),
+      language:           this.language(),
+      lineItems:          this.lineItems(),
+      internalNotes:      this.internalNotes(),
+      termsAndConditions: this.termsAndConditions(),
+      totalHT:            this.totalHT(),
+      totalTTC:           this.totalTTC(),
+      status:             'pending',
+      createdAt:          new Date().toISOString()
+    }
+
+    const request$ = this.editMode()
+      ? this.http.put(`/api/invoices/${this.invoiceDbId}`, payload)
+      : this.http.post('/api/invoices', payload)
+
+    request$.subscribe({
+      next:  () => { this.saving.set(false); this.router.navigate(['/invoices']) },
+      error: (e) => {
+        this.saveError.set(e?.error?.message ?? 'Une erreur est survenue. Veuillez réessayer.')
+        this.saving.set(false)
+      }
+    })
   }
 
-  sendByEmail(): void {
-    // TODO: wire to email service
-  }
-
-  preview(): void {
-    // TODO: open preview
-  }
+  sendByEmail(): void {}
+  preview(): void {}
 }

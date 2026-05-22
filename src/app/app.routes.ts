@@ -38,7 +38,17 @@ export const routes: Routes = [
           import('./features/clients/new-client/new-client.component').then(m => m.NewClientComponent)
       },
       {
+        path: 'client/edit/:id',
+        loadComponent: () =>
+          import('./features/clients/new-client/new-client.component').then(m => m.NewClientComponent)
+      },
+      {
         path: 'invoice/create',
+        loadComponent: () =>
+          import('./features/invoices/new-invoice/new-invoice.component').then(m => m.NewInvoiceComponent)
+      },
+      {
+        path: 'invoice/edit/:id',
         loadComponent: () =>
           import('./features/invoices/new-invoice/new-invoice.component').then(m => m.NewInvoiceComponent)
       }

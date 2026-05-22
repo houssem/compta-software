@@ -1,82 +1,156 @@
-import { Component, signal } from '@angular/core'
-import { FormsModule } from '@angular/forms'
-import { RouterLink, Router } from '@angular/router'
+import { Component, signal, computed, OnInit } from '@angular/core'
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms'
+import { RouterLink, Router, ActivatedRoute } from '@angular/router'
 import { TranslateModule } from '@ngx-translate/core'
+import { forkJoin } from 'rxjs'
 import { ClientService } from '../client.service'
-import { CreateClientDto } from '../../../shared/models/client.model'
+import { CreateClientDto, Country, Currency, PaymentTerm } from '../../../shared/models/client.model'
+
+// ── Custom validators (optional fields) ──────────────────────
+function optionalUrl(control: AbstractControl): ValidationErrors | null {
+  const v = (control.value ?? '').trim()
+  if (!v) return null
+  return /^https?:\/\/.+\..+/.test(v) ? null : { invalidUrl: true }
+}
+
+function optionalPhone(control: AbstractControl): ValidationErrors | null {
+  const v = (control.value ?? '').trim()
+  if (!v) return null
+  return /^[+\d][\d\s\-(). ]{5,}$/.test(v) ? null : { invalidPhone: true }
+}
 
 @Component({
   selector: 'app-new-client',
   standalone: true,
-  imports: [FormsModule, RouterLink, TranslateModule],
+  imports: [ReactiveFormsModule, RouterLink, TranslateModule],
   templateUrl: './new-client.component.html',
   styleUrl: './new-client.component.scss'
 })
-export class NewClientComponent {
-  companyName    = signal('')
-  website        = signal('')
+export class NewClientComponent implements OnInit {
 
-  fullName       = signal('')
-  email          = signal('')
-  phone          = signal('')
+  form!: FormGroup
 
-  street         = signal('')
-  city           = signal('')
-  postalCode     = signal('')
-  country        = signal('France')
+  // UI state
+  editMode      = signal(false)
+  loading       = signal(false)
+  configLoading = signal(true)
+  formSubmitted = signal(false)
+  errorMsg      = signal('')
 
-  taxId          = signal('')
-  currency       = signal('EUR')
-  paymentTerms   = signal('Net 30')
+  // Config from API
+  countries           = signal<Country[]>([])
+  currencies          = signal<Currency[]>([])
+  paymentTermsOptions = signal<PaymentTerm[]>([])
 
-  loading        = signal(false)
-  errorMsg       = signal('')
+  get f() { return this.form.controls }
 
-  readonly countries = [
-    'France', 'United Kingdom', 'Germany', 'Spain', 'Italy',
-    'Belgium', 'Switzerland', 'Netherlands', 'United States', 'Other'
-  ]
-
-  readonly currencies = [
-    { value: 'EUR', label: 'EUR (€) – Euro' },
-    { value: 'GBP', label: 'GBP (£) – British Pound' },
-    { value: 'USD', label: 'USD ($) – US Dollar' },
-    { value: 'CHF', label: 'CHF – Swiss Franc' },
-  ]
-
-  readonly paymentTermsOptions = ['Net 15', 'Net 30', 'Net 45', 'Net 60', 'Immédiat']
+  private clientId: string | null = null
 
   constructor(
+    private fb: FormBuilder,
     private router: Router,
+    private route: ActivatedRoute,
     private clientService: ClientService
   ) {}
 
+  ngOnInit(): void {
+    this.form = this.fb.nonNullable.group({
+      companyName: ['', Validators.required],
+      website:     ['', optionalUrl],
+      fullName:    ['', Validators.required],
+      email:       ['', [Validators.required, Validators.email]],
+      phone:       ['', optionalPhone],
+      street:      ['', Validators.required],
+      city:        ['', Validators.required],
+      postalCode:  ['', Validators.required],
+      country:     [{ value: 'Tunisie', disabled: true }],
+      taxId:       [''],
+      currency:    [{ value: 'TND', disabled: true }],
+      paymentTerms:[{ value: 'Net 30', disabled: true }],
+    })
+
+    // Detect edit mode from route param
+    this.clientId = this.route.snapshot.paramMap.get('id')
+    if (this.clientId) {
+      this.editMode.set(true)
+      this.clientService.getById(this.clientId).subscribe({
+        next: (client) => this.form.patchValue({
+          companyName:  client.companyName,
+          website:      client.website,
+          fullName:     client.contact.fullName,
+          email:        client.contact.email,
+          phone:        client.contact.phone,
+          street:       client.billingAddress.street,
+          city:         client.billingAddress.city,
+          postalCode:   client.billingAddress.postalCode,
+          country:      client.billingAddress.country,
+          taxId:        client.financial.taxId,
+          currency:     client.financial.currency,
+          paymentTerms: client.financial.paymentTerms,
+        }),
+        error: () => this.router.navigate(['/customers'])
+      })
+    }
+
+    // Load selects config
+    forkJoin({
+      countries:    this.clientService.getCountries(),
+      currencies:   this.clientService.getCurrencies(),
+      paymentTerms: this.clientService.getPaymentTerms()
+    }).subscribe({
+      next: ({ countries, currencies, paymentTerms }) => {
+        this.countries.set(countries)
+        this.currencies.set(currencies)
+        this.paymentTermsOptions.set(paymentTerms)
+        this.form.get('country')?.enable()
+        this.form.get('currency')?.enable()
+        this.form.get('paymentTerms')?.enable()
+        this.configLoading.set(false)
+      },
+      error: () => {
+        this.form.get('country')?.enable()
+        this.form.get('currency')?.enable()
+        this.form.get('paymentTerms')?.enable()
+        this.configLoading.set(false)
+      }
+    })
+  }
+
   save(): void {
+    this.form.markAllAsTouched()
+    this.formSubmitted.set(true)
+    if (this.form.invalid) return
+
     this.loading.set(true)
     this.errorMsg.set('')
 
+    const v = this.form.getRawValue()
     const dto: CreateClientDto = {
-      companyName: this.companyName(),
-      website: this.website(),
+      companyName: v.companyName,
+      website:     v.website,
       contact: {
-        fullName: this.fullName(),
-        email: this.email(),
-        phone: this.phone()
+        fullName: v.fullName,
+        email:    v.email,
+        phone:    v.phone
       },
       billingAddress: {
-        street: this.street(),
-        city: this.city(),
-        postalCode: this.postalCode(),
-        country: this.country()
+        street:     v.street,
+        city:       v.city,
+        postalCode: v.postalCode,
+        country:    v.country
       },
       financial: {
-        taxId: this.taxId(),
-        currency: this.currency() as 'EUR' | 'GBP' | 'USD' | 'CHF',
-        paymentTerms: this.paymentTerms() as 'Net 15' | 'Net 30' | 'Net 45' | 'Net 60' | 'Immédiat'
+        taxId:        v.taxId,
+        currency:     v.currency,
+        paymentTerms: v.paymentTerms
       }
     }
 
-    this.clientService.create(dto).subscribe({
+    const request$ = this.editMode()
+      ? this.clientService.update(this.clientId!, dto)
+      : this.clientService.create(dto)
+
+    request$.subscribe({
       next: () => { this.loading.set(false); this.router.navigate(['/customers']) },
       error: (e) => {
         this.errorMsg.set(e?.error?.message ?? 'Une erreur est survenue. Veuillez réessayer.')

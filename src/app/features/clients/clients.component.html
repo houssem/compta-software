@@ -29,14 +29,14 @@
     <div class="cl-kpi cl-kpi--blue">
       <p class="cl-kpi__label">{{ 'CLIENTS.KPI_TOTAL' | translate }}</p>
       <p class="cl-kpi__value">
-        {{ totalClients.toLocaleString('fr-FR') }}
-        <span class="cl-kpi__badge cl-kpi__badge--green">+4%</span>
+        @if (loading()) { <span class="cl-kpi__skeleton"></span> }
+        @else { {{ totalClients().toLocaleString('fr-FR') }} <span class="cl-kpi__badge cl-kpi__badge--green">+4%</span> }
       </p>
     </div>
     <div class="cl-kpi cl-kpi--amber">
       <p class="cl-kpi__label">{{ 'CLIENTS.KPI_NEW' | translate }}</p>
       <p class="cl-kpi__value">
-        {{ nouveaux30j }}
+        {{ nouveaux30j() }}
         <span class="cl-kpi__trend material-symbols-outlined">trending_up</span>
       </p>
     </div>
@@ -55,89 +55,145 @@
             <th class="cl-th">{{ 'CLIENTS.COL_NAME' | translate }}</th>
             <th class="cl-th">{{ 'CLIENTS.COL_CONTACT' | translate }}</th>
             <th class="cl-th">{{ 'CLIENTS.COL_EMAIL' | translate }}</th>
+            <th class="cl-th">{{ 'CLIENTS.COL_DATE' | translate }}</th>
             <th class="cl-th cl-th--center">{{ 'CLIENTS.COL_INVOICES' | translate }}</th>
             <th class="cl-th cl-th--right">{{ 'CLIENTS.COL_BALANCE' | translate }}</th>
             <th class="cl-th cl-th--center">{{ 'CLIENTS.COL_ACTIONS' | translate }}</th>
           </tr>
         </thead>
         <tbody>
-          @if (pagedClients().length === 0) {
+
+          @if (loading()) {
+            @for (_ of [1,2,3,4]; track $index) {
+              <tr class="cl-tr cl-tr--skeleton">
+                <td class="cl-td"><span class="cl-skeleton cl-skeleton--wide"></span></td>
+                <td class="cl-td"><span class="cl-skeleton"></span></td>
+                <td class="cl-td"><span class="cl-skeleton cl-skeleton--short"></span></td>
+                <td class="cl-td"><span class="cl-skeleton cl-skeleton--short"></span></td>
+                <td class="cl-td cl-td--center"><span class="cl-skeleton cl-skeleton--badge"></span></td>
+                <td class="cl-td"><span class="cl-skeleton cl-skeleton--short"></span></td>
+                <td class="cl-td"></td>
+              </tr>
+            }
+          } @else if (error()) {
             <tr>
-              <td colspan="6" class="cl-td cl-empty">{{ 'CLIENTS.EMPTY' | translate }}</td>
+              <td colspan="7" class="cl-td cl-state">
+                <span class="material-symbols-outlined cl-state__icon cl-state__icon--error">error</span>
+                <p class="cl-state__msg">{{ error() }}</p>
+              </td>
             </tr>
-          }
-          @for (client of pagedClients(); track client.id) {
-            <tr class="cl-tr">
-              <td class="cl-td">
-                <span class="cl-client-name">{{ client.nom }}</span>
+          } @else if (pagedClients().length === 0) {
+            <tr>
+              <td colspan="7" class="cl-td cl-state">
+                <span class="material-symbols-outlined cl-state__icon">group_off</span>
+                <p class="cl-state__msg">{{ 'CLIENTS.EMPTY' | translate }}</p>
               </td>
-              <td class="cl-td cl-td--muted">{{ client.contact }}</td>
-              <td class="cl-td">
-                <a class="cl-email-link" href="mailto:{{ client.email }}">{{ client.email }}</a>
-              </td>
-              <td class="cl-td cl-td--center">
-                @if (client.factureStatus === 'a-jour') {
+            </tr>
+          } @else {
+            @for (client of pagedClients(); track client.id) {
+              <tr class="cl-tr">
+
+                <td class="cl-td">
+                  <span class="cl-client-name">{{ client.companyName }}</span>
+                </td>
+                <td class="cl-td cl-td--muted">{{ client.contact.fullName }}</td>
+                <td class="cl-td">
+                  <a class="cl-email-link" href="mailto:{{ client.contact.email }}">{{ client.contact.email }}</a>
+                </td>
+                <td class="cl-td cl-td--muted cl-td--date">{{ formatDate(client.createdAt) }}</td>
+                <td class="cl-td cl-td--center">
                   <span class="cl-badge cl-badge--a-jour">{{ 'CLIENTS.STATUS_OK' | translate }}</span>
-                } @else if (client.factureStatus === 'retard') {
-                  <span class="cl-badge cl-badge--retard">{{ 'CLIENTS.STATUS_OVERDUE' | translate: { count: client.facturesCount } }}</span>
-                } @else {
-                  <span class="cl-badge cl-badge--en-attente">{{ 'CLIENTS.STATUS_PENDING' | translate: { count: client.facturesCount } }}</span>
-                }
-              </td>
-              <td class="cl-td cl-td--amount">
-                <span [class.cl-amount--danger]="client.soldeDu > 0">
-                  {{ formatAmount(client.soldeDu) }}
-                </span>
-              </td>
-              <td class="cl-td cl-td--center">
-                <button type="button" class="cl-row-action" title="Actions">
-                  <span class="material-symbols-outlined">more_horiz</span>
-                </button>
-              </td>
-            </tr>
+                </td>
+                <td class="cl-td cl-td--amount">{{ formatAmount(0) }}</td>
+                <td class="cl-td cl-td--center">
+                  <div class="cl-action-wrap">
+                    <button type="button" class="cl-row-action"
+                      (click)="toggleMenu(client.id, $event)">
+                      <span class="material-symbols-outlined">more_horiz</span>
+                    </button>
+
+                    @if (openMenuId() === client.id) {
+                      @if (confirmDeleteId() === client.id) {
+                        <div class="cl-menu" (click)="$event.stopPropagation()">
+                          <p class="cl-menu__confirm-text">
+                            <span class="material-symbols-outlined">warning</span>
+                            Supprimer ce client ?
+                          </p>
+                          <div class="cl-menu__confirm-btns">
+                            <button class="cl-menu__cancel-btn"
+                              (click)="confirmDeleteId.set(null)">Annuler</button>
+                            <button class="cl-menu__delete-btn"
+                              (click)="deleteClient(client.id, $event)">Supprimer</button>
+                          </div>
+                        </div>
+                      } @else {
+                        <div class="cl-menu" (click)="$event.stopPropagation()">
+                          <button class="cl-menu__item"
+                            (click)="editClient(client.id)">
+                            <span class="material-symbols-outlined">edit</span>
+                            Modifier
+                          </button>
+                          <div class="cl-menu__sep"></div>
+                          <button class="cl-menu__item cl-menu__item--danger"
+                            (click)="confirmDelete(client.id, $event)">
+                            <span class="material-symbols-outlined">delete</span>
+                            Supprimer
+                          </button>
+                        </div>
+                      }
+                    }
+                  </div>
+                </td>
+
+              </tr>
+            }
           }
+
         </tbody>
       </table>
     </div>
 
     <!-- PAGINATION -->
-    <div class="cl-pagination">
-      <span class="cl-pagination__info">
-        {{ 'CLIENTS.PAGE_INFO' | translate: { start: pageStart(), end: pageEnd(), total: filteredClients().length } }}
-      </span>
-      <div class="cl-pagination__controls">
-        <button
-          type="button"
-          class="cl-page-btn"
-          [disabled]="currentPage() === 1"
-          (click)="goToPage(currentPage() - 1)"
-        >
-          <span class="material-symbols-outlined">chevron_left</span>
-        </button>
+    @if (!loading() && !error() && filteredClients().length > 0) {
+      <div class="cl-pagination">
+        <span class="cl-pagination__info">
+          {{ 'CLIENTS.PAGE_INFO' | translate: { start: pageStart(), end: pageEnd(), total: filteredClients().length } }}
+        </span>
+        <div class="cl-pagination__controls">
+          <button
+            type="button"
+            class="cl-page-btn"
+            [disabled]="currentPage() === 1"
+            (click)="goToPage(currentPage() - 1)"
+          >
+            <span class="material-symbols-outlined">chevron_left</span>
+          </button>
 
-        @for (p of visiblePages(); track $index) {
-          @if (p === '...') {
-            <span class="cl-page-ellipsis">…</span>
-          } @else {
-            <button
-              type="button"
-              class="cl-page-btn"
-              [class.cl-page-btn--active]="p === currentPage()"
-              (click)="goToPage(+p)"
-            >{{ p }}</button>
+          @for (p of visiblePages(); track $index) {
+            @if (p === '...') {
+              <span class="cl-page-ellipsis">…</span>
+            } @else {
+              <button
+                type="button"
+                class="cl-page-btn"
+                [class.cl-page-btn--active]="p === currentPage()"
+                (click)="goToPage(+p)"
+              >{{ p }}</button>
+            }
           }
-        }
 
-        <button
-          type="button"
-          class="cl-page-btn"
-          [disabled]="currentPage() === totalPages()"
-          (click)="goToPage(currentPage() + 1)"
-        >
-          <span class="material-symbols-outlined">chevron_right</span>
-        </button>
+          <button
+            type="button"
+            class="cl-page-btn"
+            [disabled]="currentPage() === totalPages()"
+            (click)="goToPage(currentPage() + 1)"
+          >
+            <span class="material-symbols-outlined">chevron_right</span>
+          </button>
+        </div>
       </div>
-    </div>
+    }
+
   </div>
 
 </div>
