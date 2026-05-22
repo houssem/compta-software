@@ -57,7 +57,7 @@
     "EMAIL": "E-mail",
     "PASSWORD": "Password",
     "FORGOT": "Forgot password?",
-    "DEMO_HINT": "Demo account: <strong>admin@facturation.dev</strong> / <strong>admin123</strong>",
+    "DEMO_HINT": "",
     "LOADING": "Signing in...",
     "SUBMIT": "Sign in",
     "OR": "Or continue with",
