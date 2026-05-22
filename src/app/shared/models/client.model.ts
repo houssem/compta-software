@@ -1,5 +1,25 @@
 // src/app/shared/models/client.model.ts
 
+export interface Country {
+  id: number
+  value: string
+  label: string
+}
+
+export interface Currency {
+  id: number
+  value: string
+  label: string
+  symbol: string
+}
+
+export interface PaymentTerm {
+  id: number
+  value: string
+  label: string
+  days: number
+}
+
 export interface ClientContact {
   fullName: string
   email: string
@@ -15,8 +35,8 @@ export interface ClientAddress {
 
 export interface ClientFinancial {
   taxId: string
-  currency: 'EUR' | 'GBP' | 'USD' | 'CHF'
-  paymentTerms: 'Net 15' | 'Net 30' | 'Net 45' | 'Net 60' | 'Immédiat'
+  currency: string
+  paymentTerms: string
 }
 
 export interface CreateClientDto {

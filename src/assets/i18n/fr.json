@@ -146,7 +146,7 @@
     "SEARCH_PLACEHOLDER": "Rechercher un client...",
     "NEW_CLIENT": "Nouveau Client",
     "KPI_TOTAL": "Total Clients",
-    "KPI_NEW": "Nouveaux (30j)",
+    "KPI_NEW": "Nouveaux clients (30j)",
     "KPI_BALANCE": "Solde Global Dû",
     "COL_NAME": "Nom du Client",
     "COL_CONTACT": "Contact",
@@ -158,7 +158,11 @@
     "PAGE_INFO": "Affichage de {{start}} à {{end}} sur {{total}} clients",
     "STATUS_OK": "À JOUR",
     "STATUS_OVERDUE": "{{count}} RETARD(S)",
-    "STATUS_PENDING": "{{count}} EN ATTENTE"
+    "STATUS_PENDING": "{{count}} EN ATTENTE",
+    "KPI_FILTERED": "Résultats filtrés",
+    "COL_LOCATION": "Localisation",
+    "COL_CURRENCY": "Devise",
+    "COL_DATE": "Créé le"
   },
   "NEW_CLIENT": {
     "BREADCRUMB": "Clients",
@@ -166,6 +170,9 @@
     "CANCEL": "Annuler",
     "SAVE": "Enregistrer",
     "TITLE": "Nouveau Profil Client",
+    "EDIT_TITLE": "Modifier le Client",
+    "CREATE_SUB": "Remplissez les informations ci-dessous pour ajouter un nouveau client.",
+    "EDIT_SUB": "Modifiez les informations du client puis enregistrez.",
     "SECTION_GENERAL": "Informations générales",
     "COMPANY_NAME": "Nom de l'entreprise",
     "COMPANY_PLACEHOLDER": "Acme Corp International",
@@ -190,6 +197,7 @@
   },
   "NEW_INVOICE": {
     "TITLE": "Créer une facture",
+    "EDIT_TITLE": "Modifier la facture",
     "SECTION_GENERAL": "Informations générales",
     "CLIENT_NAME": "Nom du client",
     "CLIENT_PLACEHOLDER": "Rechercher ou sélectionner un client...",
@@ -216,6 +224,7 @@
     "TOTAL_TTC": "Total TTC",
     "SEND_EMAIL": "Envoyer par e-mail",
     "SAVE": "Sauvegarder",
+    "UPDATE": "Mettre à jour",
     "PREVIEW": "Aperçu",
     "LAST_SAVED": "Dernière sauvegarde :",
     "TIP_TITLE": "Conseil intelligent",

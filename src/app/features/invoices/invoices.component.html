@@ -24,7 +24,10 @@
     <!-- Total à payer -->
     <div class="inv-kpi inv-kpi--blue">
       <p class="inv-kpi__label">{{ 'INVOICES.KPI_TOTAL' | translate }}</p>
-      <p class="inv-kpi__value">{{ formatAmount(totalAPayer) }}</p>
+      <p class="inv-kpi__value">
+      @if (loading()) { <span class="inv-kpi__skeleton"></span> }
+      @else { {{ formatAmount(totalAPayer()) }} }
+    </p>
       <p class="inv-kpi__trend inv-kpi__trend--up">
         <span class="material-symbols-outlined">trending_up</span>
         {{ 'INVOICES.KPI_TREND' | translate }}
@@ -34,14 +37,20 @@
     <!-- Reçues récemment -->
     <div class="inv-kpi inv-kpi--amber">
       <p class="inv-kpi__label">{{ 'INVOICES.KPI_RECENT' | translate }}</p>
-      <p class="inv-kpi__value inv-kpi__value--count">{{ recuesCount }} <span>{{ 'INVOICES.KPI_INVOICES' | translate }}</span></p>
-      <p class="inv-kpi__sub">{{ 'INVOICES.KPI_PENDING_VALIDATION' | translate }} {{ enAttenteCount }}</p>
+      <p class="inv-kpi__value inv-kpi__value--count">
+        @if (loading()) { <span class="inv-kpi__skeleton"></span> }
+        @else { {{ recuesCount() }} <span>{{ 'INVOICES.KPI_INVOICES' | translate }}</span> }
+      </p>
+      <p class="inv-kpi__sub">{{ 'INVOICES.KPI_PENDING_VALIDATION' | translate }} {{ enAttenteCount() }}</p>
     </div>
 
     <!-- Total en retard -->
     <div class="inv-kpi inv-kpi--red">
       <p class="inv-kpi__label">{{ 'INVOICES.KPI_OVERDUE' | translate }}</p>
-      <p class="inv-kpi__value inv-kpi__value--danger">{{ formatAmount(totalEnRetard) }}</p>
+      <p class="inv-kpi__value inv-kpi__value--danger">
+        @if (loading()) { <span class="inv-kpi__skeleton"></span> }
+        @else { {{ formatAmount(totalEnRetard()) }} }
+      </p>
       <p class="inv-kpi__action-required">{{ 'INVOICES.KPI_ACTION' | translate }}</p>
     </div>
 
@@ -98,43 +107,105 @@
           </tr>
         </thead>
         <tbody>
-          @if (pagedInvoices().length === 0) {
+          @if (loading()) {
+            @for (_ of [1,2,3]; track $index) {
+              <tr class="inv-tr inv-tr--skeleton">
+                <td class="inv-td"><span class="inv-skeleton inv-skeleton--wide"></span></td>
+                <td class="inv-td"><span class="inv-skeleton"></span></td>
+                <td class="inv-td"><span class="inv-skeleton"></span></td>
+                <td class="inv-td"><span class="inv-skeleton inv-skeleton--short"></span></td>
+                <td class="inv-td"><span class="inv-skeleton inv-skeleton--badge"></span></td>
+                <td class="inv-td"></td>
+              </tr>
+            }
+          } @else if (error()) {
             <tr>
-              <td colspan="6" class="inv-td inv-empty">{{ 'INVOICES.EMPTY' | translate }}</td>
+              <td colspan="6" class="inv-td inv-state">
+                <span class="material-symbols-outlined inv-state__icon inv-state__icon--error">error</span>
+                <p class="inv-state__msg">{{ error() }}</p>
+              </td>
             </tr>
-          }
-          @for (inv of pagedInvoices(); track inv.id) {
-            <tr class="inv-tr">
-              <td class="inv-td">
-                <div class="inv-client">
-                  <span class="inv-avatar" [style.background]="inv.avatarColor">{{ inv.initial }}</span>
-                  <div class="inv-client__info">
-                    <span class="inv-client__name">{{ inv.client }}</span>
-                    <span class="inv-client__id">{{ inv.id }}</span>
+          } @else if (pagedInvoices().length === 0) {
+            <tr>
+              <td colspan="6" class="inv-td inv-state">
+                <span class="material-symbols-outlined inv-state__icon">receipt_long</span>
+                <p class="inv-state__msg">{{ 'INVOICES.EMPTY' | translate }}</p>
+              </td>
+            </tr>
+          } @else {
+            @for (inv of pagedInvoices(); track inv.id) {
+              <tr class="inv-tr">
+                <td class="inv-td">
+                  <div class="inv-client">
+                    <span class="inv-avatar" [style.background]="inv.avatarColor">{{ inv.initial }}</span>
+                    <div class="inv-client__info">
+                      <span class="inv-client__name">{{ inv.client }}</span>
+                      <span class="inv-client__id">{{ inv.id }}</span>
+                    </div>
                   </div>
-                </div>
-              </td>
-              <td class="inv-td inv-td--date">{{ inv.dateFacture }}</td>
-              <td class="inv-td" [class.inv-td--overdue]="inv.echeanceOverdue">{{ inv.echeance }}</td>
-              <td class="inv-td inv-td--amount">{{ formatAmount(inv.montantTTC) }}</td>
-              <td class="inv-td">
-                <span class="inv-badge inv-badge--{{ inv.statut }}">
-                  {{ 'INVOICES.STATUS_' + inv.statut.toUpperCase() | translate }}
-                </span>
-              </td>
-              <td class="inv-td inv-td--center">
-                <button type="button" class="inv-row-action" title="Actions">
-                  <span class="material-symbols-outlined">more_vert</span>
-                </button>
-              </td>
-            </tr>
+                </td>
+                <td class="inv-td inv-td--date">{{ inv.dateFacture }}</td>
+                <td class="inv-td" [class.inv-td--overdue]="inv.echeanceOverdue">{{ inv.echeance }}</td>
+                <td class="inv-td inv-td--amount">{{ formatAmount(inv.montantTTC, inv.currency) }}</td>
+                <td class="inv-td">
+                  <span class="inv-badge inv-badge--{{ inv.statut }}">
+                    {{ 'INVOICES.STATUS_' + inv.statut.toUpperCase() | translate }}
+                  </span>
+                </td>
+                <td class="inv-td inv-td--center">
+                  <div class="inv-action-wrap" (click)="$event.stopPropagation()">
+                    <button
+                      type="button"
+                      class="inv-row-action"
+                      [class.inv-row-action--active]="openMenuId() === inv.dbId"
+                      (click)="toggleMenu(inv.dbId, $event)"
+                      title="Actions"
+                    >
+                      <span class="material-symbols-outlined">more_vert</span>
+                    </button>
+
+                    @if (openMenuId() === inv.dbId) {
+                      <div class="inv-menu">
+                        @if (confirmDeleteId() === inv.dbId) {
+                          <div class="inv-menu__confirm" (click)="$event.stopPropagation()">
+                            <p class="inv-menu__confirm-text">Supprimer cette facture&nbsp;?</p>
+                            <div class="inv-menu__confirm-actions">
+                              <button class="inv-menu__confirm-cancel" (click)="cancelDelete($event)">Annuler</button>
+                              <button class="inv-menu__confirm-ok" (click)="deleteInvoice(inv.dbId, $event)">Supprimer</button>
+                            </div>
+                          </div>
+                        } @else {
+                          <button class="inv-menu__item" (click)="editInvoice(inv.dbId)">
+                            <span class="material-symbols-outlined">edit</span>
+                            Modifier
+                          </button>
+                          <button class="inv-menu__item" (click)="$event.stopPropagation()">
+                            <span class="material-symbols-outlined">send</span>
+                            Envoyer par e-mail
+                          </button>
+                          <button class="inv-menu__item" (click)="$event.stopPropagation()">
+                            <span class="material-symbols-outlined">print</span>
+                            Aperçu PDF
+                          </button>
+                          <div class="inv-menu__sep"></div>
+                          <button class="inv-menu__item inv-menu__item--danger" (click)="confirmDelete(inv.dbId, $event)">
+                            <span class="material-symbols-outlined">delete</span>
+                            Supprimer
+                          </button>
+                        }
+                      </div>
+                    }
+                  </div>
+                </td>
+              </tr>
+            }
           }
         </tbody>
       </table>
     </div>
 
     <!-- PAGINATION -->
-    <div class="inv-pagination">
+    <div class="inv-pagination" [style.visibility]="(!loading() && !error() && filteredInvoices().length > 0) ? 'visible' : 'hidden'">
       <span class="inv-pagination__info">
         {{ 'INVOICES.PAGE_INFO' | translate: { start: (currentPage()-1)*pageSize+1, end: pageEnd(), total: filteredInvoices().length } }}
       </span>

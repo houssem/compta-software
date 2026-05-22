@@ -1,50 +1,176 @@
 {
-  "clients": [
+  "countries": [
     {
-      "id": "clnt_001",
-      "reference": "CUST-2026-0001",
-      "companyName": "Acme Corp",
-      "website": "https://www.acme.com",
-      "contact": {
-        "fullName": "John Doe",
-        "email": "john@acme.com",
-        "phone": "+33 6 00 00 00 00"
-      },
-      "billingAddress": {
-        "street": "123 rue de la Paix",
-        "city": "Paris",
-        "postalCode": "75001",
-        "country": "France"
-      },
-      "financial": {
-        "taxId": "FR 12 345 678 901",
-        "currency": "EUR",
-        "paymentTerms": "Net 30"
-      },
-      "createdAt": "2026-01-15T10:00:00Z"
+      "id": 1,
+      "value": "Tunisie",
+      "label": "Tunisie"
     },
     {
-      "companyName": "ALJ",
-      "website": "https://alj.com",
+      "id": 2,
+      "value": "France",
+      "label": "France"
+    },
+    {
+      "id": 3,
+      "value": "Italie",
+      "label": "Italie"
+    },
+    {
+      "id": 4,
+      "value": "États-Unis",
+      "label": "États-Unis"
+    }
+  ],
+  "currencies": [
+    {
+      "id": 1,
+      "value": "TND",
+      "label": "TND – Dinar tunisien",
+      "symbol": "د.ت"
+    },
+    {
+      "id": 2,
+      "value": "EUR",
+      "label": "EUR (€) – Euro",
+      "symbol": "€"
+    },
+    {
+      "id": 3,
+      "value": "GBP",
+      "label": "GBP (£) – British Pound",
+      "symbol": "£"
+    },
+    {
+      "id": 4,
+      "value": "USD",
+      "label": "USD ($) – US Dollar",
+      "symbol": "$"
+    }
+  ],
+  "paymentTerms": [
+    {
+      "id": 1,
+      "value": "Immédiat",
+      "label": "Paiement immédiat",
+      "days": 0
+    },
+    {
+      "id": 2,
+      "value": "Net 15",
+      "label": "Net 15 jours",
+      "days": 15
+    },
+    {
+      "id": 3,
+      "value": "Net 30",
+      "label": "Net 30 jours",
+      "days": 30
+    },
+    {
+      "id": 4,
+      "value": "Net 45",
+      "label": "Net 45 jours",
+      "days": 45
+    },
+    {
+      "id": 5,
+      "value": "Net 60",
+      "label": "Net 60 jours",
+      "days": 60
+    },
+    {
+      "id": 6,
+      "value": "Net 90",
+      "label": "Net 90 jours",
+      "days": 90
+    }
+  ],
+  "invoices": [
+    {
+      "clientId": "clnt_1779319050184",
+      "clientName": "Inetum",
+      "invoiceNumber": "FAC-2026-2638",
+      "issueDate": "2026-05-20",
+      "dueDate": "2026-06-19",
+      "currency": "EUR",
+      "language": "FR",
+      "lineItems": [
+        {
+          "id": 1,
+          "description": "Travaux de maintenance",
+          "qty": 1,
+          "priceHT": 6610,
+          "discPct": 0,
+          "vatPct": 0
+        }
+      ],
+      "internalNotes": "",
+      "termsAndConditions": "",
+      "totalHT": 6610,
+      "totalTTC": 6610,
+      "status": "pending",
+      "createdAt": "2026-05-21T00:05:58.143Z",
+      "id": 1
+    }
+  ],
+  "languages": [
+    {
+      "id": 1,
+      "value": "FR",
+      "label": "Français"
+    },
+    {
+      "id": 2,
+      "value": "EN",
+      "label": "English"
+    }
+  ],
+  "clients": [
+    {
+      "companyName": "Steg Essahel",
+      "website": "",
       "contact": {
-        "fullName": "Thameen Jachan",
-        "email": "thameen.chadd@gmail.com",
-        "phone": "+145777777777"
+        "fullName": "Majdi Traoui",
+        "email": "majdi.troui@gmail.com",
+        "phone": ""
       },
       "billingAddress": {
-        "street": "Prince Sultan",
-        "city": "Jeddah",
-        "postalCode": "74544",
-        "country": "France"
+        "street": "Khasma",
+        "city": "Sousse",
+        "postalCode": "7854",
+        "country": "Tunisie"
       },
       "financial": {
-        "taxId": "74544444444444",
-        "currency": "EUR",
+        "taxId": "",
+        "currency": "TND",
         "paymentTerms": "Net 30"
       },
-      "id": "clnt_1779233956038",
-      "reference": "CUST-2026-8171",
-      "createdAt": "2026-05-19T23:39:16.038Z"
+      "id": "clnt_1779316822557",
+      "reference": "CUST-2026-1390",
+      "createdAt": "2026-05-20T22:40:22.557Z"
+    },
+    {
+      "companyName": "Inetum",
+      "website": "",
+      "contact": {
+        "fullName": "Mohamed Messaoud",
+        "email": "mohamed.messaoud@gmail.com",
+        "phone": ""
+      },
+      "billingAddress": {
+        "street": "Les berges du Lac",
+        "city": "Tunis",
+        "postalCode": "7584",
+        "country": "Tunisie"
+      },
+      "financial": {
+        "taxId": "",
+        "currency": "TND",
+        "paymentTerms": "Net 30"
+      },
+      "id": "clnt_1779319050184",
+      "reference": "CUST-2026-7019",
+      "createdAt": "2026-05-20T23:17:30.184Z"
     }
   ]
 }
