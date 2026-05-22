@@ -1,20 +1,6 @@
 <div class="rg-page">
 
-  <!-- ══ HEADER ═══════════════════════════════════════════ -->
-  <header class="rg-header">
-    <div class="rg-header__brand">
-      <span class="rg-header__mark">
-        <span class="material-symbols-outlined">receipt_long</span>
-      </span>
-      <span class="rg-header__name">{{ 'HEADER.BRAND' | translate }}</span>
-    </div>
-    <div class="rg-header__right">
-      {{ 'REGISTER.ALREADY_ACCOUNT' | translate }}
-      <a routerLink="/login" class="rg-header__link">{{ 'REGISTER.SIGN_IN' | translate }}</a>
-    </div>
-  </header>
-
-  <!-- ══ MAIN ═════════════════════════════════════════════ -->
+<!-- ══ MAIN ═════════════════════════════════════════════ -->
   <main class="rg-main">
 
     <!-- STEPPER -->
@@ -319,7 +305,7 @@
             <span class="material-symbols-outlined">arrow_back</span>
             {{ 'REGISTER.PREV' | translate }}
           </button>
-          <button type="button" class="rg-btn rg-btn--success" (click)="next()" [disabled]="submitting()">
+          <button type="button" class="rg-btn rg-btn--primary" (click)="next()" [disabled]="submitting()">
             @if (submitting()) {
               <span class="material-symbols-outlined rg-spin">progress_activity</span>
             } @else {
