@@ -12,6 +12,10 @@ export const routes: Routes = [
     loadComponent: () => import('./features/login/login.component').then(m => m.LoginComponent)
   },
   {
+    path: 'register',
+    loadComponent: () => import('./features/register/register.component').then(m => m.RegisterComponent)
+  },
+  {
     path: '',
     component: MainLayoutComponent,
     canActivate: [authGuard],
@@ -51,6 +55,21 @@ export const routes: Routes = [
         path: 'invoice/edit/:id',
         loadComponent: () =>
           import('./features/invoices/new-invoice/new-invoice.component').then(m => m.NewInvoiceComponent)
+      },
+      {
+        path: 'suppliers',
+        loadComponent: () =>
+          import('./features/suppliers/suppliers.component').then(m => m.SuppliersComponent)
+      },
+      {
+        path: 'supplier/create',
+        loadComponent: () =>
+          import('./features/suppliers/new-supplier/new-supplier.component').then(m => m.NewSupplierComponent)
+      },
+      {
+        path: 'supplier/edit/:id',
+        loadComponent: () =>
+          import('./features/suppliers/new-supplier/new-supplier.component').then(m => m.NewSupplierComponent)
       }
     ]
   },
