@@ -131,41 +131,21 @@
         <div class="ns-grid ns-grid--3">
 
           <div class="ns-field">
-            <label class="ns-label" for="fullName">
-              {{ 'NEW_SUPPLIER.FULL_NAME' | translate }}
-              <span class="ns-required">*</span>
-            </label>
+            <label class="ns-label" for="fullName">{{ 'NEW_SUPPLIER.FULL_NAME' | translate }}</label>
             <input id="fullName" class="ns-input" type="text" placeholder="Ahmed Ben Salem"
-              [class.ns-input--error]="f['fullName'].invalid && f['fullName'].touched"
               formControlName="fullName" />
-            @if (f['fullName'].invalid && f['fullName'].touched) {
-              <p class="ns-field-error">
-                <span class="material-symbols-outlined">error</span>
-                Le nom complet est requis.
-              </p>
-            }
           </div>
 
           <div class="ns-field">
-            <label class="ns-label" for="email">
-              {{ 'NEW_SUPPLIER.EMAIL' | translate }}
-              <span class="ns-required">*</span>
-            </label>
+            <label class="ns-label" for="email">{{ 'NEW_SUPPLIER.EMAIL' | translate }}</label>
             <input id="email" class="ns-input" type="email" placeholder="contact@fournisseur.com"
               [class.ns-input--error]="f['email'].invalid && f['email'].touched"
               formControlName="email" />
-            @if (f['email'].touched) {
-              @if (f['email'].hasError('required')) {
-                <p class="ns-field-error">
-                  <span class="material-symbols-outlined">error</span>
-                  L'adresse e-mail est requise.
-                </p>
-              } @else if (f['email'].hasError('email')) {
-                <p class="ns-field-error">
-                  <span class="material-symbols-outlined">error</span>
-                  L'adresse e-mail n'est pas valide.
-                </p>
-              }
+            @if (f['email'].hasError('email') && f['email'].touched) {
+              <p class="ns-field-error">
+                <span class="material-symbols-outlined">error</span>
+                L'adresse e-mail n'est pas valide.
+              </p>
             }
           </div>
 
@@ -202,54 +182,24 @@
         <div class="ns-grid ns-grid--1">
 
           <div class="ns-field">
-            <label class="ns-label" for="street">
-              {{ 'NEW_SUPPLIER.STREET' | translate }}
-              <span class="ns-required">*</span>
-            </label>
+            <label class="ns-label" for="street">{{ 'NEW_SUPPLIER.STREET' | translate }}</label>
             <textarea id="street" class="ns-textarea" rows="2"
               placeholder="Rue de l'Industrie, Zone Industrielle"
-              [class.ns-textarea--error]="f['street'].invalid && f['street'].touched"
               formControlName="street"></textarea>
-            @if (f['street'].invalid && f['street'].touched) {
-              <p class="ns-field-error">
-                <span class="material-symbols-outlined">error</span>
-                L'adresse est requise.
-              </p>
-            }
           </div>
 
           <div class="ns-grid ns-grid--3">
 
             <div class="ns-field">
-              <label class="ns-label" for="city">
-                {{ 'NEW_SUPPLIER.CITY' | translate }}
-                <span class="ns-required">*</span>
-              </label>
+              <label class="ns-label" for="city">{{ 'NEW_SUPPLIER.CITY' | translate }}</label>
               <input id="city" class="ns-input" type="text" placeholder="Tunis"
-                [class.ns-input--error]="f['city'].invalid && f['city'].touched"
                 formControlName="city" />
-              @if (f['city'].invalid && f['city'].touched) {
-                <p class="ns-field-error">
-                  <span class="material-symbols-outlined">error</span>
-                  La ville est requise.
-                </p>
-              }
             </div>
 
             <div class="ns-field">
-              <label class="ns-label" for="postalCode">
-                {{ 'NEW_SUPPLIER.POSTAL_CODE' | translate }}
-                <span class="ns-required">*</span>
-              </label>
+              <label class="ns-label" for="postalCode">{{ 'NEW_SUPPLIER.POSTAL_CODE' | translate }}</label>
               <input id="postalCode" class="ns-input" type="text" placeholder="1000"
-                [class.ns-input--error]="f['postalCode'].invalid && f['postalCode'].touched"
                 formControlName="postalCode" />
-              @if (f['postalCode'].invalid && f['postalCode'].touched) {
-                <p class="ns-field-error">
-                  <span class="material-symbols-outlined">error</span>
-                  Le code postal est requis.
-                </p>
-              }
             </div>
 
             <div class="ns-field">

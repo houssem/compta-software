@@ -1,15 +1,51 @@
 {
   "registrations": [],
   "industries": [
-    { "id": 1, "value": "Technologie", "label": "Technologie & IT" },
-    { "id": 2, "value": "Finance", "label": "Finance & Comptabilité" },
-    { "id": 3, "value": "Santé", "label": "Santé & Médical" },
-    { "id": 4, "value": "Commerce", "label": "Commerce & Distribution" },
-    { "id": 5, "value": "Industrie", "label": "Industrie & Production" },
-    { "id": 6, "value": "Immobilier", "label": "Immobilier & Construction" },
-    { "id": 7, "value": "Conseil", "label": "Conseil & Services" },
-    { "id": 8, "value": "Éducation", "label": "Éducation & Formation" },
-    { "id": 9, "value": "Autre", "label": "Autre" }
+    {
+      "id": 1,
+      "value": "Technologie",
+      "label": "Technologie & IT"
+    },
+    {
+      "id": 2,
+      "value": "Finance",
+      "label": "Finance & Comptabilité"
+    },
+    {
+      "id": 3,
+      "value": "Santé",
+      "label": "Santé & Médical"
+    },
+    {
+      "id": 4,
+      "value": "Commerce",
+      "label": "Commerce & Distribution"
+    },
+    {
+      "id": 5,
+      "value": "Industrie",
+      "label": "Industrie & Production"
+    },
+    {
+      "id": 6,
+      "value": "Immobilier",
+      "label": "Immobilier & Construction"
+    },
+    {
+      "id": 7,
+      "value": "Conseil",
+      "label": "Conseil & Services"
+    },
+    {
+      "id": 8,
+      "value": "Éducation",
+      "label": "Éducation & Formation"
+    },
+    {
+      "id": 9,
+      "value": "Autre",
+      "label": "Autre"
+    }
   ],
   "countries": [
     {
@@ -211,6 +247,28 @@
         "paymentTerms": "Net 30"
       },
       "id": 1
+    },
+    {
+      "companyName": "Damacino",
+      "website": "",
+      "category": "Autre",
+      "contact": {
+        "fullName": "",
+        "email": "",
+        "phone": ""
+      },
+      "address": {
+        "street": "",
+        "city": "",
+        "postalCode": "",
+        "country": "Tunisie"
+      },
+      "financial": {
+        "taxId": "",
+        "currency": "TND",
+        "paymentTerms": "Net 30"
+      },
+      "id": 2
     }
   ],
   "clients": [
