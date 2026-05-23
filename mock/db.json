@@ -280,6 +280,52 @@
       "label": "English"
     }
   ],
+  "suppliers": [
+    {
+      "companyName": "Tunisie Telecom",
+      "website": "",
+      "category": "Télécommunications",
+      "contact": {
+        "fullName": "Foulen",
+        "email": "foulen@gmail.com",
+        "phone": ""
+      },
+      "address": {
+        "street": "Menzah 8",
+        "city": "Tunis",
+        "postalCode": "1083",
+        "country": "Tunisie"
+      },
+      "financial": {
+        "taxId": "",
+        "currency": "TND",
+        "paymentTerms": "Net 30"
+      },
+      "id": 1
+    },
+    {
+      "companyName": "Damacino",
+      "website": "",
+      "category": "Autre",
+      "contact": {
+        "fullName": "",
+        "email": "",
+        "phone": ""
+      },
+      "address": {
+        "street": "",
+        "city": "",
+        "postalCode": "",
+        "country": "Tunisie"
+      },
+      "financial": {
+        "taxId": "",
+        "currency": "TND",
+        "paymentTerms": "Net 30"
+      },
+      "id": 2
+    }
+  ],
   "clients": [
     {
       "companyName": "Steg Essahel",
