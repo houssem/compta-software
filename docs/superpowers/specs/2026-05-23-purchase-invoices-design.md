@@ -100,6 +100,7 @@ export interface LineItem {
 ### Layout (pas de KPI cards)
 
 1. **Header** — titre "Factures d'achat", sous-titre, bouton "Nouvelle facture" (→ `/purchase-invoice/create`)
+Ajouter un autre bouton "Importer Facture" 
 2. **Card tableau** :
    - Barre de contrôles : recherche (par nom fournisseur ou code facture) + filtre statut
    - Colonnes : Fournisseur (avatar + nom + code facture), Code facture, Date facture, Montant TTC, Actions
