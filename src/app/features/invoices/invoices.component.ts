@@ -54,8 +54,9 @@ export class InvoicesComponent implements OnInit {
   loading = signal(true)
   error   = signal('')
 
-  openMenuId     = signal<string | null>(null)
+  openMenuId      = signal<string | null>(null)
   confirmDeleteId = signal<string | null>(null)
+  menuAnchorRect  = signal<{ top: number; right: number } | null>(null)
 
   searchQuery  = signal('')
   statusFilter = signal<InvoiceStatus | ''>('')
@@ -130,12 +131,27 @@ export class InvoicesComponent implements OnInit {
   onDocumentClick(): void {
     this.openMenuId.set(null)
     this.confirmDeleteId.set(null)
+    this.menuAnchorRect.set(null)
+  }
+
+  @HostListener('window:scroll')
+  onWindowScroll(): void {
+    this.openMenuId.set(null)
+    this.confirmDeleteId.set(null)
+    this.menuAnchorRect.set(null)
   }
 
   toggleMenu(dbId: string, event: MouseEvent): void {
     event.stopPropagation()
     this.confirmDeleteId.set(null)
-    this.openMenuId.set(this.openMenuId() === dbId ? null : dbId)
+    if (this.openMenuId() === dbId) {
+      this.openMenuId.set(null)
+      this.menuAnchorRect.set(null)
+    } else {
+      const rect = (event.currentTarget as HTMLElement).getBoundingClientRect()
+      this.menuAnchorRect.set({ top: rect.bottom + 4, right: window.innerWidth - rect.right })
+      this.openMenuId.set(dbId)
+    }
   }
 
   editInvoice(dbId: string): void {

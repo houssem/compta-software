@@ -153,7 +153,7 @@
                   </span>
                 </td>
                 <td class="inv-td inv-td--center">
-                  <div class="inv-action-wrap" (click)="$event.stopPropagation()">
+                  <div class="inv-action-wrap">
                     <button
                       type="button"
                       class="inv-row-action"
@@ -163,38 +163,6 @@
                     >
                       <span class="material-symbols-outlined">more_vert</span>
                     </button>
-
-                    @if (openMenuId() === inv.dbId) {
-                      <div class="inv-menu">
-                        @if (confirmDeleteId() === inv.dbId) {
-                          <div class="inv-menu__confirm" (click)="$event.stopPropagation()">
-                            <p class="inv-menu__confirm-text">Supprimer cette facture&nbsp;?</p>
-                            <div class="inv-menu__confirm-actions">
-                              <button class="inv-menu__confirm-cancel" (click)="cancelDelete($event)">Annuler</button>
-                              <button class="inv-menu__confirm-ok" (click)="deleteInvoice(inv.dbId, $event)">Supprimer</button>
-                            </div>
-                          </div>
-                        } @else {
-                          <button class="inv-menu__item" (click)="editInvoice(inv.dbId)">
-                            <span class="material-symbols-outlined">edit</span>
-                            Modifier
-                          </button>
-                          <button class="inv-menu__item" (click)="$event.stopPropagation()">
-                            <span class="material-symbols-outlined">send</span>
-                            Envoyer par e-mail
-                          </button>
-                          <button class="inv-menu__item" (click)="$event.stopPropagation()">
-                            <span class="material-symbols-outlined">print</span>
-                            Aperçu PDF
-                          </button>
-                          <div class="inv-menu__sep"></div>
-                          <button class="inv-menu__item inv-menu__item--danger" (click)="confirmDelete(inv.dbId, $event)">
-                            <span class="material-symbols-outlined">delete</span>
-                            Supprimer
-                          </button>
-                        }
-                      </div>
-                    }
                   </div>
                 </td>
               </tr>
@@ -272,5 +240,46 @@
     </div>
 
   </div>
+
+  <!-- Floating action menu — position:fixed to escape overflow clipping -->
+  @if (openMenuId() !== null && menuAnchorRect() !== null) {
+    @if (confirmDeleteId() === openMenuId()) {
+      <div class="inv-menu" style="position:fixed"
+           [style.top.px]="menuAnchorRect()!.top"
+           [style.right.px]="menuAnchorRect()!.right"
+           (click)="$event.stopPropagation()">
+        <div class="inv-menu__confirm">
+          <p class="inv-menu__confirm-text">Supprimer cette facture&nbsp;?</p>
+          <div class="inv-menu__confirm-actions">
+            <button class="inv-menu__confirm-cancel" (click)="cancelDelete($event)">Annuler</button>
+            <button class="inv-menu__confirm-ok" (click)="deleteInvoice(openMenuId()!, $event)">Supprimer</button>
+          </div>
+        </div>
+      </div>
+    } @else {
+      <div class="inv-menu" style="position:fixed"
+           [style.top.px]="menuAnchorRect()!.top"
+           [style.right.px]="menuAnchorRect()!.right"
+           (click)="$event.stopPropagation()">
+        <button class="inv-menu__item" (click)="editInvoice(openMenuId()!)">
+          <span class="material-symbols-outlined">edit</span>
+          Modifier
+        </button>
+        <button class="inv-menu__item" (click)="$event.stopPropagation()">
+          <span class="material-symbols-outlined">send</span>
+          Envoyer par e-mail
+        </button>
+        <button class="inv-menu__item" (click)="$event.stopPropagation()">
+          <span class="material-symbols-outlined">print</span>
+          Aperçu PDF
+        </button>
+        <div class="inv-menu__sep"></div>
+        <button class="inv-menu__item inv-menu__item--danger" (click)="confirmDelete(openMenuId()!, $event)">
+          <span class="material-symbols-outlined">delete</span>
+          Supprimer
+        </button>
+      </div>
+    }
+  }
 
 </div>

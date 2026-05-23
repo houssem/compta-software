@@ -433,10 +433,7 @@
 }
 
 .cl-menu {
-  position: absolute;
-  top: calc(100% + 4px);
-  right: 0;
-  z-index: 100;
+  z-index: 1000;
   background: var(--color-surface-container-lowest);
   border: 1px solid var(--color-border-subtle);
   border-radius: var(--radius-md);

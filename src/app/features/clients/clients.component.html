@@ -111,37 +111,6 @@
                       (click)="toggleMenu(client.id, $event)">
                       <span class="material-symbols-outlined">more_horiz</span>
                     </button>
-
-                    @if (openMenuId() === client.id) {
-                      @if (confirmDeleteId() === client.id) {
-                        <div class="cl-menu" (click)="$event.stopPropagation()">
-                          <p class="cl-menu__confirm-text">
-                            <span class="material-symbols-outlined">warning</span>
-                            Supprimer ce client ?
-                          </p>
-                          <div class="cl-menu__confirm-btns">
-                            <button class="cl-menu__cancel-btn"
-                              (click)="confirmDeleteId.set(null)">Annuler</button>
-                            <button class="cl-menu__delete-btn"
-                              (click)="deleteClient(client.id, $event)">Supprimer</button>
-                          </div>
-                        </div>
-                      } @else {
-                        <div class="cl-menu" (click)="$event.stopPropagation()">
-                          <button class="cl-menu__item"
-                            (click)="editClient(client.id)">
-                            <span class="material-symbols-outlined">edit</span>
-                            Modifier
-                          </button>
-                          <div class="cl-menu__sep"></div>
-                          <button class="cl-menu__item cl-menu__item--danger"
-                            (click)="confirmDelete(client.id, $event)">
-                            <span class="material-symbols-outlined">delete</span>
-                            Supprimer
-                          </button>
-                        </div>
-                      }
-                    }
                   </div>
                 </td>
 
@@ -195,5 +164,40 @@
     }
 
   </div>
+
+  <!-- Floating action menu — position:fixed to escape overflow clipping -->
+  @if (openMenuId() !== null && menuAnchorRect() !== null) {
+    @if (confirmDeleteId() === openMenuId()) {
+      <div class="cl-menu" style="position:fixed"
+           [style.top.px]="menuAnchorRect()!.top"
+           [style.right.px]="menuAnchorRect()!.right"
+           (click)="$event.stopPropagation()">
+        <p class="cl-menu__confirm-text">
+          <span class="material-symbols-outlined">warning</span>
+          Supprimer ce client ?
+        </p>
+        <div class="cl-menu__confirm-btns">
+          <button class="cl-menu__cancel-btn" (click)="confirmDeleteId.set(null)">Annuler</button>
+          <button class="cl-menu__delete-btn" (click)="deleteClient(openMenuId()!, $event)">Supprimer</button>
+        </div>
+      </div>
+    } @else {
+      <div class="cl-menu" style="position:fixed"
+           [style.top.px]="menuAnchorRect()!.top"
+           [style.right.px]="menuAnchorRect()!.right"
+           (click)="$event.stopPropagation()">
+        <button class="cl-menu__item" (click)="editClient(openMenuId()!)">
+          <span class="material-symbols-outlined">edit</span>
+          Modifier
+        </button>
+        <div class="cl-menu__sep"></div>
+        <button class="cl-menu__item cl-menu__item--danger"
+          (click)="confirmDelete(openMenuId()!, $event)">
+          <span class="material-symbols-outlined">delete</span>
+          Supprimer
+        </button>
+      </div>
+    }
+  }
 
 </div>
