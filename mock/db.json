@@ -1,5 +1,60 @@
 {
-  "registrations": [],
+  "registrations": [
+    {
+      "fullName": "Test User",
+      "email": "test@example.com",
+      "password": "password123",
+      "company": {
+        "name": "Acme SAS",
+        "vatNumber": "",
+        "industry": "Technologie",
+        "address": {
+          "streetNo": "",
+          "streetName": "Rue de la Paix",
+          "city": "Paris",
+          "postalCode": "75001",
+          "country": "France"
+        },
+        "logo": ""
+      },
+      "bank": {
+        "accountHolder": "Test User",
+        "bankName": "BNP Paribas",
+        "iban": "FR76 3000 6000 0112 3456 7890 189",
+        "swiftBic": "BNPAFRPPXXX"
+      },
+      "status": "pending",
+      "submittedAt": "2026-05-22T20:09:19.454Z",
+      "id": 1
+    },
+    {
+      "fullName": "Houssem KALLEL",
+      "email": "houssem.kallel@gmail.com",
+      "password": "Hklhkl201181$",
+      "company": {
+        "name": "Supply World Dev",
+        "vatNumber": "17218899W",
+        "industry": "Technologie",
+        "address": {
+          "streetNo": "14",
+          "streetName": "Galaxy resident",
+          "city": "Ariana",
+          "postalCode": "2083",
+          "country": "Tunisie"
+        },
+        "logo": ""
+      },
+      "bank": {
+        "accountHolder": "Supply World Dev",
+        "bankName": "Attijari Bank",
+        "iban": "TN123456789321456987147",
+        "swiftBic": "AAAAA"
+      },
+      "status": "pending",
+      "submittedAt": "2026-05-22T20:17:51.192Z",
+      "id": 2
+    }
+  ],
   "industries": [
     {
       "id": 1,

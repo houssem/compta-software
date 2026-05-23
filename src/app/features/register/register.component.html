@@ -1,20 +1,6 @@
 <div class="rg-page">
 
-  <!-- ══ HEADER ═══════════════════════════════════════════ -->
-  <header class="rg-header">
-    <div class="rg-header__brand">
-      <span class="rg-header__mark">
-        <span class="material-symbols-outlined">receipt_long</span>
-      </span>
-      <span class="rg-header__name">{{ 'HEADER.BRAND' | translate }}</span>
-    </div>
-    <div class="rg-header__right">
-      {{ 'REGISTER.ALREADY_ACCOUNT' | translate }}
-      <a routerLink="/login" class="rg-header__link">{{ 'REGISTER.SIGN_IN' | translate }}</a>
-    </div>
-  </header>
-
-  <!-- ══ MAIN ═════════════════════════════════════════════ -->
+<!-- ══ MAIN ═════════════════════════════════════════════ -->
   <main class="rg-main">
 
     <!-- STEPPER -->
@@ -56,7 +42,7 @@
         <div class="rg-stepper__circle"
           [class.rg-stepper__circle--active]="currentStep() === 4"
           [class.rg-stepper__circle--done]="false">
-          @if (currentStep() === 4) { <span class="material-symbols-outlined">check</span> } @else { ✓ }
+          @if (currentStep() === 4) { <span class="material-symbols-outlined">check</span> } @else { 4 }
         </div>
         <span class="rg-stepper__label" [class.rg-stepper__label--active]="currentStep() === 4">
           {{ 'REGISTER.STEP_CONFIRM' | translate }}
@@ -217,6 +203,7 @@
             <label class="rg-label">{{ 'REGISTER.COUNTRY' | translate }} <span class="rg-req">*</span></label>
             <select class="rg-select" [class.rg-select--error]="err.country()"
               [ngModel]="country()" (ngModelChange)="country.set($event)">
+              <option value="">{{ 'REGISTER.COUNTRY' | translate }}</option>
               @for (c of countries; track c) {
                 <option [value]="c">{{ c }}</option>
               }
@@ -318,7 +305,7 @@
             <span class="material-symbols-outlined">arrow_back</span>
             {{ 'REGISTER.PREV' | translate }}
           </button>
-          <button type="button" class="rg-btn rg-btn--success" (click)="next()" [disabled]="submitting()">
+          <button type="button" class="rg-btn rg-btn--primary" (click)="next()" [disabled]="submitting()">
             @if (submitting()) {
               <span class="material-symbols-outlined rg-spin">progress_activity</span>
             } @else {

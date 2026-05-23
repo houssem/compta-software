@@ -69,7 +69,7 @@
       </div>
 
       <!-- Form -->
-      <form class="lp-form" (ngSubmit)="onSubmit()" #loginForm="ngForm">
+      <form class="lp-form" (ngSubmit)="onSubmit()" #loginForm="ngForm" autocomplete="off">
 
         <div class="lp-field">
           <label class="lp-label" for="email">{{ 'LOGIN.EMAIL' | translate }}</label>
@@ -94,8 +94,6 @@
             </button>
           </div>
         </div>
-
-        <p class="lp-hint" [innerHTML]="'LOGIN.DEMO_HINT' | translate"></p>
 
         @if (errorMessage) {
           <div class="lp-error">

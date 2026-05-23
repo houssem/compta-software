@@ -53,7 +53,7 @@ export class RegisterComponent implements OnInit {
   streetName   = signal('')
   city         = signal('')
   postalCode   = signal('')
-  country      = signal('France')
+  country      = signal('')
   logoBase64   = signal('')
   logoFileName = signal('')
 

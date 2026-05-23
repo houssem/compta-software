@@ -31,11 +31,20 @@ export class ClientsComponent implements OnInit {
   // ── Action menu ──────────────────────────────────────────────
   openMenuId      = signal<string | null>(null)
   confirmDeleteId = signal<string | null>(null)
+  menuAnchorRect  = signal<{ top: number; right: number } | null>(null)
 
   @HostListener('document:click')
   onDocumentClick(): void {
     this.openMenuId.set(null)
     this.confirmDeleteId.set(null)
+    this.menuAnchorRect.set(null)
+  }
+
+  @HostListener('window:scroll')
+  onWindowScroll(): void {
+    this.openMenuId.set(null)
+    this.confirmDeleteId.set(null)
+    this.menuAnchorRect.set(null)
   }
 
   constructor(private clientService: ClientService, private router: Router) {}
@@ -114,7 +123,14 @@ export class ClientsComponent implements OnInit {
   toggleMenu(id: string, event: MouseEvent): void {
     event.stopPropagation()
     this.confirmDeleteId.set(null)
-    this.openMenuId.set(this.openMenuId() === id ? null : id)
+    if (this.openMenuId() === id) {
+      this.openMenuId.set(null)
+      this.menuAnchorRect.set(null)
+    } else {
+      const rect = (event.currentTarget as HTMLElement).getBoundingClientRect()
+      this.menuAnchorRect.set({ top: rect.bottom + 4, right: window.innerWidth - rect.right })
+      this.openMenuId.set(id)
+    }
   }
 
   editClient(id: string): void {

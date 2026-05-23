@@ -1,3 +1,43 @@
+# Register CSS Redesign Implementation Plan
+
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+
+**Goal:** Replace the registration page's dark glassmorphism SCSS with the app's standard light design system so it looks consistent with the new-client and login pages.
+
+**Architecture:** Pure SCSS rewrite of `register.component.scss` — all class names (`.rg-*`) stay the same, HTML and TypeScript are untouched. Every color/spacing value is replaced with CSS custom properties from `src/styles.scss`. Puppeteer screenshots verify all 4 steps render correctly.
+
+**Tech Stack:** Angular 17 SCSS, CSS custom properties, Puppeteer (npx), `npm start` dev server on port 4200.
+
+---
+
+## File Map
+
+| File | Action | Responsibility |
+|---|---|---|
+| `src/app/features/register/register.component.scss` | **Rewrite** | All visual styling for the registration page |
+| `src/app/features/register/register.component.html` | **No change** | — |
+| `src/app/features/register/register.component.ts` | **No change** | — |
+
+---
+
+### Task 1: Replace page shell, card and animations
+
+**Files:**
+- Modify: `src/app/features/register/register.component.scss`
+
+- [ ] **Step 1: Start the dev server in the background**
+
+```bash
+npm start &
+```
+
+Wait ~10s for it to be ready on http://localhost:4200/register.
+
+- [ ] **Step 2: Replace the file header, host, keyframes, page and card blocks**
+
+Replace the entire content of `src/app/features/register/register.component.scss` with the following (the rest of the tasks will append to this base):
+
+```scss
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&display=swap');
 
 :host {
@@ -61,7 +101,31 @@
   margin-bottom: 28px;
   line-height: 1.6;
 }
+```
 
+- [ ] **Step 3: Verify in browser**
+
+Open http://localhost:4200/register — the page should now have a light (#f9f9fe) background and a white card with a subtle border. The stepper will look broken (still dark) — that is expected, it will be fixed in Task 2.
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add src/app/features/register/register.component.scss
+git commit -m "style(register): replace dark shell and card with light theme"
+```
+
+---
+
+### Task 2: Rewrite the stepper
+
+**Files:**
+- Modify: `src/app/features/register/register.component.scss` (append)
+
+- [ ] **Step 1: Append stepper styles**
+
+Add the following block at the end of `register.component.scss`:
+
+```scss
 /* ── STEPPER ─────────────────────────────────────────────── */
 .rg-stepper {
   display: flex;
@@ -135,7 +199,31 @@
 
   &--done { background: rgba(16, 185, 129, 0.45); }
 }
+```
 
+- [ ] **Step 2: Verify in browser**
+
+Open http://localhost:4200/register — step 1 circle should be navy (#001e40), steps 2/3/4 circles light grey. Labels should be readable on the white background. Navigate to step 2 to see step 1 turn green with a checkmark.
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add src/app/features/register/register.component.scss
+git commit -m "style(register): rewrite stepper for light theme"
+```
+
+---
+
+### Task 3: Rewrite inputs, selects and labels
+
+**Files:**
+- Modify: `src/app/features/register/register.component.scss` (append)
+
+- [ ] **Step 1: Append grid, field, label and input styles**
+
+Add the following block at the end of `register.component.scss`:
+
+```scss
 /* ── GRID ────────────────────────────────────────────────── */
 .rg-grid {
   display: grid;
@@ -299,7 +387,31 @@
 
   .material-symbols-outlined { font-size: 14px; flex-shrink: 0; }
 }
+```
 
+- [ ] **Step 2: Verify in browser**
+
+Open http://localhost:4200/register step 1. Inputs should be white with a light grey border. Clicking an input should show a navy focus ring. The email icon should turn navy when the field is focused. The required `*` should be red.
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add src/app/features/register/register.component.scss
+git commit -m "style(register): rewrite inputs, selects and labels for light theme"
+```
+
+---
+
+### Task 4: Rewrite nav buttons and submit error
+
+**Files:**
+- Modify: `src/app/features/register/register.component.scss` (append)
+
+- [ ] **Step 1: Append button and nav styles**
+
+Add the following block at the end of `register.component.scss`:
+
+```scss
 /* ── NAV ─────────────────────────────────────────────────── */
 .rg-nav {
   display: flex;
@@ -355,6 +467,8 @@
 
     &:active:not(:disabled) { transform: scale(0.98); }
   }
+
+  /* --success is removed; step 3 submit button now uses --primary */
 }
 
 .rg-spin { animation: spin 1s linear infinite; }
@@ -373,7 +487,45 @@
 
   .material-symbols-outlined { font-size: 16px; flex-shrink: 0; }
 }
+```
 
+- [ ] **Step 2: Update step 3 submit button class in HTML**
+
+Open `src/app/features/register/register.component.html` and find line ~308:
+
+```html
+<button type="button" class="rg-btn rg-btn--success" (click)="next()" [disabled]="submitting()">
+```
+
+Change `rg-btn--success` to `rg-btn--primary`:
+
+```html
+<button type="button" class="rg-btn rg-btn--primary" (click)="next()" [disabled]="submitting()">
+```
+
+- [ ] **Step 3: Verify in browser**
+
+Steps 1–3: "Next" button should be navy. "Back" button should be the ghost style (transparent with border). On step 3 the submit button should also be navy (not green).
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add src/app/features/register/register.component.scss src/app/features/register/register.component.html
+git commit -m "style(register): rewrite buttons and nav for light theme"
+```
+
+---
+
+### Task 5: Rewrite summary, pending banner and login hint
+
+**Files:**
+- Modify: `src/app/features/register/register.component.scss` (append)
+
+- [ ] **Step 1: Append step 4 styles**
+
+Add the following block at the end of `register.component.scss`:
+
+```scss
 /* ── SUMMARY (Step 4) ────────────────────────────────────── */
 .rg-summary { margin-bottom: 24px; display: flex; flex-direction: column; gap: 10px; }
 
@@ -461,7 +613,31 @@
   transition: opacity 0.15s;
   &:hover { text-decoration: underline; }
 }
+```
 
+- [ ] **Step 2: Verify in browser**
+
+Navigate to step 4 (fill in and submit steps 1–3 with any values). The summary sections should have a light grey background with navy section headings. The pending banner should be light green-tinted with a readable dark text body.
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add src/app/features/register/register.component.scss
+git commit -m "style(register): rewrite summary, pending banner and login hint"
+```
+
+---
+
+### Task 6: Rewrite the footer
+
+**Files:**
+- Modify: `src/app/features/register/register.component.scss` (append)
+
+- [ ] **Step 1: Append footer styles**
+
+Add the following block at the end of `register.component.scss`:
+
+```scss
 /* ── FOOTER ──────────────────────────────────────────────── */
 .rg-footer {
   background: var(--color-surface-container-low);
@@ -556,3 +732,114 @@
 
   &:hover { opacity: 1; color: var(--color-primary); }
 }
+```
+
+- [ ] **Step 2: Verify in browser**
+
+Scroll to the bottom of the page. The footer should have a light grey (#f4f3f8) background, navy headings ("Precision Ledger", column titles), and muted grey link text. It should match the login page footer visually.
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add src/app/features/register/register.component.scss
+git commit -m "style(register): rewrite footer for light theme"
+```
+
+---
+
+### Task 7: Puppeteer screenshot verification
+
+**Files:**
+- Create (temp): `stitch/screenshot-register.mjs`
+
+- [ ] **Step 1: Ensure the dev server is running**
+
+```bash
+curl -s -o /dev/null -w "%{http_code}" http://localhost:4200
+```
+
+Expected: `200`. If not, run `npm start &` and wait 10s.
+
+- [ ] **Step 2: Create the Puppeteer script**
+
+Create `stitch/screenshot-register.mjs`:
+
+```js
+import puppeteer from 'puppeteer';
+import { mkdir } from 'fs/promises';
+
+const OUT = 'stitch/screenshots/register';
+await mkdir(OUT, { recursive: true });
+
+const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
+const page = await browser.newPage();
+
+// Desktop: all 4 steps
+await page.setViewport({ width: 1280, height: 800 });
+await page.goto('http://localhost:4200/register', { waitUntil: 'networkidle2' });
+await page.screenshot({ path: `${OUT}/step1-desktop.png`, fullPage: true });
+
+// Fill step 1 and advance
+await page.type('input[placeholder="Jean Dupont"]', 'Test User');
+await page.type('input[placeholder="nom@entreprise.com"]', 'test@example.com');
+const pwds = await page.$$('input[type="password"]');
+await pwds[0].type('password123');
+await pwds[1].type('password123');
+await page.click('button.rg-btn--primary');
+await page.waitForTimeout(400);
+await page.screenshot({ path: `${OUT}/step2-desktop.png`, fullPage: true });
+
+// Fill step 2 and advance
+await page.select('select', 'Technologie');
+await page.type('input[placeholder="Acme Corp SAS"]', 'Acme SAS');
+await page.type('input[placeholder="Rue de la Paix"]', 'Rue de la Paix');
+await page.type('input[placeholder="Paris"]', 'Paris');
+await page.type('input[placeholder="75001"]', '75001');
+const selects = await page.$$('select');
+await selects[1].select('France');
+await page.click('button.rg-btn--primary');
+await page.waitForTimeout(400);
+await page.screenshot({ path: `${OUT}/step3-desktop.png`, fullPage: true });
+
+// Fill step 3 and advance
+const inputs = await page.$$('input.rg-input');
+await inputs[0].type('Test User');
+await inputs[1].type('BNP Paribas');
+await inputs[2].type('FR76 3000 6000 0112 3456 7890 189');
+await inputs[3].type('BNPAFRPPXXX');
+await page.click('button.rg-btn--primary');
+await page.waitForTimeout(600);
+await page.screenshot({ path: `${OUT}/step4-desktop.png`, fullPage: true });
+
+// Mobile: step 1 only
+await page.setViewport({ width: 375, height: 812 });
+await page.goto('http://localhost:4200/register', { waitUntil: 'networkidle2' });
+await page.screenshot({ path: `${OUT}/step1-mobile.png`, fullPage: true });
+
+await browser.close();
+console.log(`Screenshots saved to ${OUT}/`);
+```
+
+- [ ] **Step 3: Run the script**
+
+```bash
+npx puppeteer@24.43.1 node stitch/screenshot-register.mjs
+```
+
+Expected output: `Screenshots saved to stitch/screenshots/register/`
+
+- [ ] **Step 4: Review the screenshots**
+
+Open each PNG and verify:
+- `step1-desktop.png` — light background, white card, navy stepper circle on step 1, white inputs with visible labels
+- `step2-desktop.png` — step 1 circle is green ✓, step 2 circle is navy, white inputs
+- `step3-desktop.png` — step 1+2 circles green ✓, step 3 is navy, submit button is navy (not green)
+- `step4-desktop.png` — all 3 circles green ✓, light grey summary sections, green-tinted pending banner with dark text
+- `step1-mobile.png` — single column layout, no horizontal overflow
+
+- [ ] **Step 5: Commit the script (optional — keep for future CI use)**
+
+```bash
+git add stitch/screenshot-register.mjs
+git commit -m "chore: add Puppeteer screenshot script for register page"
+```

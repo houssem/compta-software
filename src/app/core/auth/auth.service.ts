@@ -1,33 +1,48 @@
-import { Injectable, signal } from '@angular/core'
+import { Injectable, signal, inject } from '@angular/core'
 import { Router } from '@angular/router'
+import { HttpClient } from '@angular/common/http'
 import { Observable, of, throwError } from 'rxjs'
+import { switchMap } from 'rxjs/operators'
 import { User } from '../../shared/models/kpi.model'
 
-const MOCK_USER: User = {
-  id: '1',
-  email: 'admin@facturation.dev',
-  name: 'Admin',
-  role: 'admin'
+interface Registration {
+  id: number
+  fullName: string
+  email: string
+  password: string
+  status: string
 }
 
-const MOCK_PASSWORD = 'admin123'
 const USER_KEY = 'user'
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   readonly currentUser = signal<User | null>(null)
+  private http = inject(HttpClient)
+  private router = inject(Router)
 
-  constructor(private router: Router) {
+  constructor() {
     this._restoreSession()
   }
 
   login(email: string, password: string): Observable<void> {
-    if (email === MOCK_USER.email && password === MOCK_PASSWORD) {
-      localStorage.setItem(USER_KEY, JSON.stringify(MOCK_USER))
-      this.currentUser.set(MOCK_USER)
-      return of(void 0)
-    }
-    return throwError(() => ({ error: { message: 'Email ou mot de passe incorrect' } }))
+    return this.http.get<Registration[]>(`/api/registrations?email=${encodeURIComponent(email)}`).pipe(
+      switchMap(results => {
+        const match = results.find(r => r.email === email && r.password === password)
+        if (!match) {
+          return throwError(() => ({ error: { message: 'Email ou mot de passe incorrect' } }))
+        }
+        const user: User = {
+          id: String(match.id),
+          email: match.email,
+          name: match.fullName,
+          role: 'user'
+        }
+        localStorage.setItem(USER_KEY, JSON.stringify(user))
+        this.currentUser.set(user)
+        return of(void 0)
+      })
+    )
   }
 
   logout(): void {
