@@ -3,21 +3,8 @@ import { RouterLink, Router } from '@angular/router'
 import { CommonModule } from '@angular/common'
 import { FormsModule } from '@angular/forms'
 import { TranslateModule } from '@ngx-translate/core'
-import { HttpClient } from '@angular/common/http'
-
-type InvoiceStatus = 'overdue' | 'paid' | 'pending' | 'approved' | 'draft' | 'sent'
-
-interface ApiInvoice {
-  id: number | string
-  clientName: string
-  invoiceNumber: string
-  issueDate: string
-  dueDate: string
-  currency: string
-  totalTTC: number
-  status: InvoiceStatus
-  createdAt: string
-}
+import { InvoiceService } from './invoice.service'
+import { ApiInvoice, InvoiceStatus } from '../../shared/models/invoice.model'
 
 interface Invoice {
   id: string
@@ -48,8 +35,8 @@ interface Activity {
 })
 export class InvoicesComponent implements OnInit {
 
-  private http   = inject(HttpClient)
-  private router = inject(Router)
+  private invoiceService = inject(InvoiceService)
+  private router         = inject(Router)
 
   loading = signal(true)
   error   = signal('')
@@ -94,8 +81,7 @@ export class InvoicesComponent implements OnInit {
     return this.filteredInvoices().slice(start, start + this.pageSize)
   })
 
-  pages = computed(() => Array.from({ length: this.totalPages() }, (_, i) => i + 1))
-
+  pages   = computed(() => Array.from({ length: this.totalPages() }, (_, i) => i + 1))
   pageEnd = computed(() => Math.min(this.currentPage() * this.pageSize, this.filteredInvoices().length))
 
   readonly activities: Activity[] = [
@@ -114,7 +100,7 @@ export class InvoicesComponent implements OnInit {
   ]
 
   ngOnInit(): void {
-    this.http.get<ApiInvoice[]>('/api/invoices').subscribe({
+    this.invoiceService.getAll().subscribe({
       next: (data) => {
         this.allInvoices.set(data.map(a => this.mapInvoice(a)))
         this.loading.set(false)
@@ -172,7 +158,7 @@ export class InvoicesComponent implements OnInit {
 
   deleteInvoice(dbId: string, event: MouseEvent): void {
     event.stopPropagation()
-    this.http.delete(`/api/invoices/${dbId}`).subscribe({
+    this.invoiceService.delete(dbId).subscribe({
       next: () => {
         this.allInvoices.update(list => list.filter(i => i.dbId !== dbId))
         this.openMenuId.set(null)
@@ -200,16 +186,16 @@ export class InvoicesComponent implements OnInit {
     const today = new Date().toISOString().split('T')[0]
     const overdue = api.dueDate < today && api.status !== 'paid'
     return {
-      id:             api.invoiceNumber,
-      dbId:           String(api.id),
-      client:         api.clientName,
-      initial:        api.clientName.charAt(0).toUpperCase(),
-      avatarColor:    this.hashColor(api.clientName),
-      dateFacture:    this.formatDate(api.issueDate),
-      echeance:       this.formatDate(api.dueDate),
-      montantTTC:     api.totalTTC,
-      currency:       api.currency,
-      statut:         overdue ? 'overdue' : api.status,
+      id:              api.invoiceNumber,
+      dbId:            String(api.id),
+      client:          api.clientName,
+      initial:         api.clientName.charAt(0).toUpperCase(),
+      avatarColor:     this.hashColor(api.clientName),
+      dateFacture:     this.formatDate(api.issueDate),
+      echeance:        this.formatDate(api.dueDate),
+      montantTTC:      api.totalTTC,
+      currency:        api.currency,
+      statut:          overdue ? 'overdue' : api.status,
       echeanceOverdue: overdue
     }
   }
