@@ -7,7 +7,7 @@ import { forkJoin } from 'rxjs'
 import { Currency } from '../../../shared/models/client.model'
 import { Supplier } from '../../../shared/models/supplier.model'
 import { PurchaseInvoiceService } from '../purchase-invoice.service'
-import { LineItem, StoredPurchaseInvoice, PurchaseInvoiceStatus } from '../../../shared/models/purchase-invoice.model'
+import { LineItem, StoredPurchaseInvoice, PurchaseInvoiceStatus, InvoiceAttachment } from '../../../shared/models/purchase-invoice.model'
 
 @Component({
   selector: 'app-new-purchase-invoice',
@@ -54,6 +54,13 @@ export class NewPurchaseInvoiceComponent implements OnInit {
   private nextId = 1
   lineItems = signal<LineItem[]>([])
   vatRates  = [0, 7, 13, 19]
+
+  attachment = signal<InvoiceAttachment | null>(null)
+  dragOver   = signal(false)
+  fileError  = signal('')
+
+  readonly ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'application/pdf']
+  readonly MAX_SIZE = 10 * 1024 * 1024
 
   formSubmitted = signal(false)
   saving        = signal(false)
@@ -128,6 +135,7 @@ export class NewPurchaseInvoiceComponent implements OnInit {
     this.dueDate.set(inv.dueDate)
     this.currency.set(inv.currency)
     this.internalNotes.set(inv.internalNotes ?? '')
+    this.attachment.set(inv.attachment ?? null)
     this.status.set(inv.status)
     const maxId = Math.max(0, ...inv.lineItems.map(i => i.id))
     this.nextId = maxId + 1
@@ -167,6 +175,43 @@ export class NewPurchaseInvoiceComponent implements OnInit {
     this.lineItems.update(items => items.map(i => i.id === id ? { ...i, [field]: value } : i))
   }
 
+  onDragOver(event: DragEvent): void { event.preventDefault(); this.dragOver.set(true) }
+  onDragLeave(): void { this.dragOver.set(false) }
+  onDrop(event: DragEvent): void {
+    event.preventDefault()
+    this.dragOver.set(false)
+    const file = event.dataTransfer?.files?.[0]
+    if (file) this.processFile(file)
+  }
+  onFileSelected(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0]
+    if (file) this.processFile(file)
+    ;(event.target as HTMLInputElement).value = ''
+  }
+
+  private processFile(file: File): void {
+    this.fileError.set('')
+    if (!this.ACCEPTED_TYPES.includes(file.type)) {
+      this.fileError.set('Format non supporté. Utilisez PDF, JPG, PNG ou WEBP.')
+      return
+    }
+    if (file.size > this.MAX_SIZE) {
+      this.fileError.set('Le fichier dépasse la limite de 10 Mo.')
+      return
+    }
+    const reader = new FileReader()
+    reader.onload = () => this.attachment.set({ name: file.name, type: file.type, size: file.size, data: reader.result as string })
+    reader.readAsDataURL(file)
+  }
+
+  removeAttachment(): void { this.attachment.set(null); this.fileError.set('') }
+  isImage(type: string): boolean { return type.startsWith('image/') }
+  formatFileSize(bytes: number): string {
+    if (bytes < 1024) return bytes + ' o'
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' Ko'
+    return (bytes / (1024 * 1024)).toFixed(1) + ' Mo'
+  }
+
   formatAmount(value: number): string {
     const symbol = this.currencies().find(c => c.value === this.currency())?.symbol ?? this.currency()
     return value.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ' + symbol
@@ -187,6 +232,7 @@ export class NewPurchaseInvoiceComponent implements OnInit {
       currency:      this.currency(),
       lineItems:     this.lineItems(),
       internalNotes: this.internalNotes(),
+      attachment:    this.attachment(),
       totalHT:       this.totalHT(),
       totalTTC:      this.totalTTC(),
       status:        this.status(),

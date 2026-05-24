@@ -1,5 +1,12 @@
 export type PurchaseInvoiceStatus = 'reçue' | 'validée' | 'payée' | 'en retard'
 
+export interface InvoiceAttachment {
+  name: string
+  type: string
+  size: number
+  data: string
+}
+
 export interface LineItem {
   id: number
   description: string
@@ -31,6 +38,7 @@ export interface StoredPurchaseInvoice {
   currency: string
   lineItems: LineItem[]
   internalNotes: string
+  attachment?: InvoiceAttachment | null
   status: PurchaseInvoiceStatus
 }
 
@@ -43,6 +51,7 @@ export interface CreatePurchaseInvoicePayload {
   currency: string
   lineItems: LineItem[]
   internalNotes: string
+  attachment?: InvoiceAttachment | null
   totalHT: number
   totalTTC: number
   status: PurchaseInvoiceStatus
