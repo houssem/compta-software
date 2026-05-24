@@ -70,6 +70,21 @@ export const routes: Routes = [
         path: 'supplier/edit/:id',
         loadComponent: () =>
           import('./features/suppliers/new-supplier/new-supplier.component').then(m => m.NewSupplierComponent)
+      },
+      {
+        path: 'purchase-invoices',
+        loadComponent: () =>
+          import('./features/purchase-invoices/purchase-invoices.component').then(m => m.PurchaseInvoicesComponent)
+      },
+      {
+        path: 'purchase-invoice/create',
+        loadComponent: () =>
+          import('./features/purchase-invoices/new-purchase-invoice/new-purchase-invoice.component').then(m => m.NewPurchaseInvoiceComponent)
+      },
+      {
+        path: 'purchase-invoice/edit/:id',
+        loadComponent: () =>
+          import('./features/purchase-invoices/new-purchase-invoice/new-purchase-invoice.component').then(m => m.NewPurchaseInvoiceComponent)
       }
     ]
   },
